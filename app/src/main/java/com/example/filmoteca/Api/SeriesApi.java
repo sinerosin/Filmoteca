@@ -15,12 +15,5 @@ public interface SeriesApi {
             @Query("language") String language,
             @Query("page") int page
     );
-    @GET("tv/{series_id}")
-    Call<Serie> getSerieDetail(
-            @Path("series_id") int seriesId,
-            @Query("api_key") String apiKey,
-            @Query("language") String language,
-            @Query("append_to_response") String appendToResponse
-    );
 
 }

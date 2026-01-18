@@ -6,12 +6,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.filmoteca.Model.Movie;
 
 import com.example.filmoteca.R;
+import com.example.filmoteca.ViewModel.MovieViewModel;
 import com.example.filmoteca.databinding.ViewholderMovieBinding;
 
 
@@ -20,9 +23,11 @@ import java.util.List;
 
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewHolder> {
     List<Movie> MovieList;
+    private MovieViewModel viewModel;
     private final LayoutInflater inflater;
-    public MoviesAdapter(Context context) {
+    public MoviesAdapter(Context context,MovieViewModel viewModel) {
         this.inflater = LayoutInflater.from(context);
+        this.viewModel = viewModel;
         this.MovieList=new ArrayList<>();
     }
     @NonNull
@@ -41,7 +46,13 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
 
         holder.binding.tituloMovie.setText(Movie.getTitulo());
         holder.binding.descripcionMovie.setText(Movie.getOverwiew());
+        holder.itemView.setOnClickListener(view -> {
 
+            viewModel.seleccionarMovie(Movie);
+
+            NavController navController = Navigation.findNavController(view);
+            navController.navigate(R.id.detailMovieFragment);
+        });
 
 
     }
@@ -59,7 +70,6 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
         this.MovieList.addAll(Movies);
         notifyItemRangeInserted(inicio, Movies.size());
     }
-
 
 
     public static class MovieViewHolder extends RecyclerView.ViewHolder {

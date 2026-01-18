@@ -39,7 +39,7 @@ public class DetailSerieFragment extends Fragment {
             if (serie != null) {
                 binding.sTituloDetalle.setText(serie.getTitulo());
                 binding.sDescripcionDetalle.setText(serie.getOverwiew());
-                binding.sEpisodiosDetalle.setText("Episodios: " + serie.getNumeroEpisodios());
+                binding.sEpisodiosDetalle.setText("Estreno: " + serie.estreno());
 
                 // Cargar la imagen
                 Glide.with(this).load(serie.getPoster_path()).into(binding.sImagenDetalle);

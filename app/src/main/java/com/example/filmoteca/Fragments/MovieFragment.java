@@ -53,7 +53,7 @@ public class MovieFragment extends Fragment {
     }
 
     private void configurarRecyclerView() {
-        adapter = new MoviesAdapter(requireContext());
+        adapter = new MoviesAdapter(requireContext(),viewModel);
         binding.recyclerViewMovie.setAdapter(adapter);
         binding.recyclerViewMovie.setLayoutManager(new LinearLayoutManager(getContext()));
     }

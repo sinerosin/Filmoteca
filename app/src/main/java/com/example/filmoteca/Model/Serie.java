@@ -10,7 +10,8 @@ public class Serie  {
     @SerializedName("overview")
     private String overwiew;
     private String poster_path;
-    private int number_of_episodes;
+
+    private String first_air_date ;
     private String video_key;
 
     public Serie(String name){
@@ -30,8 +31,8 @@ public class Serie  {
     public String getPoster_path() {
         return "https://image.tmdb.org/t/p/w500"+poster_path;
     }
-    public int getNumeroEpisodios() {
-        return number_of_episodes;
+    public String estreno() {
+        return first_air_date;
     }
     public String getVideo_key() {
         return "https://www.youtube.com/watch?v="+video_key;
