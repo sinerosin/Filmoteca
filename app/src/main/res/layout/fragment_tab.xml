@@ -5,15 +5,17 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
+    app:tabTextColor="@color/black"
     tools:context=".Fragments.TabFragment">
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tabIndicatorColor="?attr/colorPrimary"
-        app:tabTextColor="@android:color/darker_gray"
-        app:tabSelectedTextColor="?attr/colorPrimary"
+        app:tabIndicatorColor="@color/dorado"
+        app:tabTextColor="@color/white"
+        app:tabSelectedTextColor="@color/dorado"
         app:tabMode="fixed"/>
 
     <androidx.viewpager2.widget.ViewPager2

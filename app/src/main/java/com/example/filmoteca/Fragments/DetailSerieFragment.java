@@ -39,12 +39,12 @@ public class DetailSerieFragment extends Fragment {
             if (serie != null) {
                 binding.sTituloDetalle.setText(serie.getTitulo());
                 binding.sDescripcionDetalle.setText(serie.getOverwiew());
-                binding.sEpisodiosDetalle.setText("Estreno: " + serie.estreno());
+                binding.sEstreno.setText("Estreno: " + serie.estreno());
 
-                // Cargar la imagen
+
                 Glide.with(this).load(serie.getPoster_path()).into(binding.sImagenDetalle);
 
-                // Configurar el link a YouTube
+
                 binding.btnTrailer.setOnClickListener(v -> {
                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(serie.getVideo_key()));
                     startActivity(intent);

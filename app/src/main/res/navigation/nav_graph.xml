@@ -19,7 +19,7 @@
     <fragment
         android:id="@+id/detailMovieFragment"
         android:name="com.example.filmoteca.Fragments.DetailMovieFragment"
-        android:label="fragment_detail_movie"
+        android:label="Detalle"
         tools:layout="@layout/fragment_detail_movie" />
 
 </navigation>
