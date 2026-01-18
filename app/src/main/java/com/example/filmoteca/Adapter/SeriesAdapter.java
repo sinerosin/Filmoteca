@@ -23,9 +23,11 @@ import java.util.List;
 
 public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SerieViewHolder> {
     List<Serie> serieList;
+    private SerieViewModel viewModel;
     private final LayoutInflater inflater;
     public SeriesAdapter(Context context) {
         this.inflater = LayoutInflater.from(context);
+
         this.serieList=new ArrayList<>();
     }
     @NonNull
@@ -44,7 +46,13 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SerieViewH
 
        holder.binding.tituloSerie.setText(serie.getTitulo());
        holder.binding.descripcionSerie.setText(serie.getOverwiew());
+       holder.itemView.setOnClickListener(view -> {
 
+            viewModel.seleccionarSerie(serie);
+
+           NavController navController = Navigation.findNavController(view);
+           navController.navigate(R.id.detailSerieFragment);
+       });
 
 
     }

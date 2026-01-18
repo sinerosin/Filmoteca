@@ -1,8 +1,12 @@
 package com.example.filmoteca.Model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Movie {
     private int id;
-    private String name;
+
+    private String title;
+    @SerializedName("overview")
     private String overwiew;
     private String poster_path;
 
@@ -10,7 +14,7 @@ public class Movie {
         return id;
     }
     public String getTitulo() {
-        return name;
+        return title;
     }
 
     public String getOverwiew() {

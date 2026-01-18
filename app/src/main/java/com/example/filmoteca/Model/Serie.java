@@ -1,10 +1,13 @@
 package com.example.filmoteca.Model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 
 public class Serie  {
     private int id;
     private String name;
+    @SerializedName("overview")
     private String overwiew;
     private String poster_path;
 

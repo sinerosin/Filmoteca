@@ -16,5 +16,10 @@
         android:label="Detalle"
         tools:layout="@layout/fragment_detail_serie" >
     </fragment>
+    <fragment
+        android:id="@+id/detailMovieFragment"
+        android:name="com.example.filmoteca.DetailMovieFragment"
+        android:label="fragment_detail_movie"
+        tools:layout="@layout/fragment_detail_movie" />
 
 </navigation>
