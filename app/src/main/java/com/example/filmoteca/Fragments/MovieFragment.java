@@ -59,7 +59,7 @@ public class MovieFragment extends Fragment {
     }
 
     private void observarMovies() {
-        viewModel.Movies.observe(getViewLifecycleOwner(), resource -> {
+        viewModel.movies.observe(getViewLifecycleOwner(), resource -> {
             if (resource == null) return;
 
             // Gestionamos los diferentes estados
@@ -83,7 +83,7 @@ public class MovieFragment extends Fragment {
                     binding.progressLoading.setVisibility(View.GONE);
                     binding.recyclerViewMovie.setVisibility(View.GONE);
                     binding.layoutError.setVisibility(View.VISIBLE);
-                    binding.sError.setText(resource.message);
+                    binding.mError.setText(resource.message);
                     break;
             }
         });

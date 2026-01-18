@@ -18,7 +18,7 @@ import com.example.filmoteca.databinding.ViewholderMovieBinding;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MoviesAdapter {
+public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewHolder> {
     List<Movie> MovieList;
     private final LayoutInflater inflater;
     public MoviesAdapter(Context context) {

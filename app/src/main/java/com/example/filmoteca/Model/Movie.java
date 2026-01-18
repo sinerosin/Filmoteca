@@ -6,9 +6,6 @@ public class Movie {
     private String overwiew;
     private String poster_path;
 
-    public Movie(String name){
-        this.name=name;
-    }
     public int getId() {
         return id;
     }
