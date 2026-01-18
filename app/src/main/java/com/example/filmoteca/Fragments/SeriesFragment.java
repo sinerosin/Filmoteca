@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,14 +43,68 @@ public class SeriesFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        viewModel=new ViewModelProvider(requireActivity()).get(SerieViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity()).get(SerieViewModel.class);
 
-        adapter = new SeriesAdapter(requireContext(), new ArrayList<>(),viewModel);
-        binding.recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        binding.recyclerView.setAdapter(adapter);
 
-        viewModel.series.observe(getViewLifecycleOwner(), series -> {
-            adapter.establecerLista(series);
+        configurarRecyclerView();
+        observarSeries();
+        configurarPaginacion();
+
+
+        viewModel.cargarSeries();
+    }
+
+    private void configurarRecyclerView() {
+        adapter = new SeriesAdapter(requireContext());
+        binding.recyclerViewSerie.setAdapter(adapter);
+        binding.recyclerViewSerie.setLayoutManager(new LinearLayoutManager(getContext()));
+    }
+
+    private void observarSeries() {
+        viewModel.informacionSerie.observe(getViewLifecycleOwner(), resource -> {
+            if (resource == null) return;
+
+            // Gestionamos los diferentes estados
+            switch (resource.status) {
+                case LOADING:
+                    binding.progressLoading.setVisibility(View.VISIBLE);
+                    binding.layoutError.setVisibility(View.GONE);
+                    binding.recyclerViewSerie.setVisibility(View.VISIBLE);
+                    break;
+
+                case SUCCESS:
+                    binding.progressLoading.setVisibility(View.GONE);
+                    binding.layoutError.setVisibility(View.GONE);
+                    binding.recyclerViewSerie.setVisibility(View.VISIBLE);
+
+
+                    adapter.addSerieList(resource.data);
+                    break;
+
+                case ERROR:
+                    binding.progressLoading.setVisibility(View.GONE);
+                    binding.recyclerViewSerie.setVisibility(View.GONE);
+                    binding.layoutError.setVisibility(View.VISIBLE);
+                    binding.sError.setText(resource.message);
+                    break;
+            }
+        });
+    }private void configurarPaginacion() {
+        // Añadimos un listener al RecyclerView para detectar el scroll
+        binding.recyclerViewSerie.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                // Comprobamos si el usuario ha llegado al final del RecyclerView.
+                // canScrollVertically(1) devuelve false cuando NO se puede seguir bajando.
+                if (!recyclerView.canScrollVertically(1)) {
+
+                    // Si estamos en el final, pedimos al ViewModel que cargue la siguiente página
+                    viewModel.cargarSeries();
+                }
+            }
         });
     }
 }

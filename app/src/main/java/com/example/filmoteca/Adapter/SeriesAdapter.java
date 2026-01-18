@@ -11,21 +11,22 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.filmoteca.Model.Serie;
 import com.example.filmoteca.R;
+import com.example.filmoteca.Response.SerieResponse;
 import com.example.filmoteca.ViewModel.SerieViewModel;
 import com.example.filmoteca.databinding.ViewholderSerieBinding;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SerieViewHolder> {
-    private List<Serie> series;
-    private SerieViewModel viewModel;
+    List<Serie> serieList;
     private final LayoutInflater inflater;
-    public SeriesAdapter(Context context, List<Serie> series, SerieViewModel viewModel) {
-        this.series = series;
-        this.viewModel = viewModel;
+    public SeriesAdapter(Context context) {
         this.inflater = LayoutInflater.from(context);
+        this.serieList=new ArrayList<>();
     }
     @NonNull
     @Override
@@ -36,28 +37,32 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SerieViewH
     }
     @Override
     public void onBindViewHolder(@NonNull SerieViewHolder holder, int position) {
-        Serie serie = series.get(position);
-        holder.binding.tituloSerie.setText(serie.getTitulo());
+       Serie serie =serieList.get(position);
 
-        holder.itemView.setOnClickListener(v -> {
+       Glide.with(holder.itemView.getContext())
+               .load(serie.getPoster_path()).into(holder.binding.imagenSerie);
 
-           viewModel.seleccionarSerie(serie);
+       holder.binding.tituloSerie.setText(serie.getTitulo());;
+       holder.binding.descripcionSerie.setText(serie.getOverwiew());
 
 
-            NavController navController = Navigation.findNavController(v);
-            navController.navigate(R.id.detailSerieFragment);
-        });
 
     }
     @Override
     public int getItemCount() {
-        return series != null ? series.size() : 0;
+        return serieList != null ? serieList.size() : 0;
     }
 
     public void establecerLista(List<Serie> series) {
-        this.series = series;
+        this.serieList = series;
         notifyDataSetChanged();
     }
+    public void addSerieList(List<Serie> series) {
+     int inicio = this.serieList.size();
+     this.serieList.addAll(series);
+     notifyItemRangeInserted(inicio, series.size());
+    }
+
 
 
     public static class SerieViewHolder extends RecyclerView.ViewHolder {

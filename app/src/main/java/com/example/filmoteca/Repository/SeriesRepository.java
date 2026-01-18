@@ -15,40 +15,33 @@ import retrofit2.Response;
 
 public class SeriesRepository {
     private final SeriesApi api;
-
+    private int PAGE=1;
     public SeriesRepository() {
         api = RetrofitClient.getSeriesApi();
     }
-
-    // Callback propio para enviar el resultado al ViewModel
-    public interface PokemonCallback {
-        void onResult(Resource<Serie> result);
-    }
     public interface SerieCallback {
-        void onResult(Resource<Serie> result);
+        void onResult(Resource<List<Serie>> result);
     }
     public void getSeries(SerieCallback callback) {
         callback.onResult(Resource.loading());
 
-        // Llamamos a las series populares de TMDB
-        api.getSeries("es-ES", 1).enqueue(new Callback<Serie>() {
+
+        api.getSeries("es-ES", PAGE).enqueue(new Callback<SerieResponse>() {
             @Override
-            public void onResponse(Call<SerieResponse> call, Response<Serie> response) {
+            public void onResponse(Call<SerieResponse> call, Response<SerieResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    // Enviamos la lista de series
-                    callback.onResult(Resource.success(response.body()));
+
+                    List<Serie> lista = response.body().getResults();
+
+                    callback.onResult(Resource.success(lista));
                 } else {
-                    callback.onResult(Resource.error("Error al obtener series"));
+                    callback.onResult(Resource.error("No se pudo cargar la Lista"));
                 }
+                PAGE++;
             }
 
             @Override
-            public void onResponse(Call<Serie> call, Response<Serie> response) {
-
-            }
-
-            @Override
-            public void onFailure(Call<Serie> call, Throwable t) {
+            public void onFailure(Call<SerieResponse> call, Throwable t) {
                 callback.onResult(Resource.error("Fallo de red: " + t.getMessage()));
             }
         });

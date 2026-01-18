@@ -1,35 +1,16 @@
 package com.example.filmoteca.Response;
 
 import com.example.filmoteca.Model.Serie;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
 public class SerieResponse {
-    private List<SerieEntry> results;
+    @SerializedName("results")
+    private List<Serie> results;
 
-    public List<SerieEntry> getResults() {
+    public List<Serie> getResults() {
         return results;
     }
-    public class SerieEntry {
-        private int id;
-        private String name;
-        private String overview;
-        private String poster_path;
-        public int getId() {
-            return id;
-        }
-        public String getName() {
-            return name;
-        }
-        public String getOverview() {
-            return overview;
-        }
-        public String getPoster_path() {
-            return poster_path;
-        }
-    }
-
-
-
 
 }
