@@ -27,7 +27,7 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SerieViewH
     private final LayoutInflater inflater;
     public SeriesAdapter(Context context) {
         this.inflater = LayoutInflater.from(context);
-
+        this.viewModel = new SerieViewModel();
         this.serieList=new ArrayList<>();
     }
     @NonNull
