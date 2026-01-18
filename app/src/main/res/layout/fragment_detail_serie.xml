@@ -16,5 +16,31 @@
         android:textStyle="bold"
         android:layout_marginBottom="8dp" />
 
+    <ImageView
+        android:id="@+id/sImagenDetalle"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:scaleType="fitCenter" />
+
+    <TextView
+        android:id="@+id/sEpisodiosDetalle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textStyle="italic" />
+
+    <TextView
+        android:id="@+id/sDescripcionDetalle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp" />
+
+    <Button
+        android:id="@+id/btnTrailer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Ver Tráiler en YouTube" />
+
 
 </LinearLayout >

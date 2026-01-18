@@ -1,5 +1,7 @@
 package com.example.filmoteca.Fragments;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.filmoteca.Model.Serie;
 import com.example.filmoteca.R;
 import com.example.filmoteca.ViewModel.SerieViewModel;
@@ -35,6 +38,17 @@ public class DetailSerieFragment extends Fragment {
         viewModel.serieSeleccionada.observe(getViewLifecycleOwner(),serie -> {
             if (serie != null) {
                 binding.sTituloDetalle.setText(serie.getTitulo());
+                binding.sDescripcionDetalle.setText(serie.getOverwiew());
+                binding.sEpisodiosDetalle.setText("Episodios: " + serie.getNumeroEpisodios());
+
+                // Cargar la imagen
+                Glide.with(this).load(serie.getPoster_path()).into(binding.sImagenDetalle);
+
+                // Configurar el link a YouTube
+                binding.btnTrailer.setOnClickListener(v -> {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(serie.getVideo_key()));
+                    startActivity(intent);
+                });
             } else {
 
                 Toast.makeText(requireContext(), "No se pudo cargar el detalle de la serie", Toast.LENGTH_SHORT).show();
