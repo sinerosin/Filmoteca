@@ -55,7 +55,7 @@ public class SeriesFragment extends Fragment {
     }
 
     private void configurarRecyclerView() {
-        adapter = new SeriesAdapter(requireContext());
+        adapter = new SeriesAdapter(requireContext(), viewModel);
         binding.recyclerViewSerie.setAdapter(adapter);
         binding.recyclerViewSerie.setLayoutManager(new LinearLayoutManager(getContext()));
     }

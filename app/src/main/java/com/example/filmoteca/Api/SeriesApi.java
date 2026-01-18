@@ -20,7 +20,7 @@ public interface SeriesApi {
             @Path("series_id") int seriesId,
             @Query("api_key") String apiKey,
             @Query("language") String language,
-            @Query("append_to_response") String appendToResponse // Usaremos "videos"
+            @Query("append_to_response") String appendToResponse
     );
 
 }
