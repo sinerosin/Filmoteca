@@ -15,14 +15,14 @@
         android:padding="8dp"
         android:gravity="center_horizontal">
         <TextView
-            android:id="@+id/tituloSerie"
+            android:id="@+id/tituloMovie"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:textSize="18sp"
             android:textStyle="bold" />
         <ImageView
-            android:id="@+id/imagenSerie"
+            android:id="@+id/imagenMovie"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -30,7 +30,7 @@
             android:adjustViewBounds="true"/>
 
         <TextView
-            android:id="@+id/descripcionSerie"
+            android:id="@+id/descripcionMovie"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"

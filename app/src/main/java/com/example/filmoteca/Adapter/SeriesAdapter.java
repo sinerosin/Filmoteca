@@ -42,7 +42,7 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SerieViewH
        Glide.with(holder.itemView.getContext())
                .load(serie.getPoster_path()).into(holder.binding.imagenSerie);
 
-       holder.binding.tituloSerie.setText(serie.getTitulo());;
+       holder.binding.tituloSerie.setText(serie.getTitulo());
        holder.binding.descripcionSerie.setText(serie.getOverwiew());
 
 

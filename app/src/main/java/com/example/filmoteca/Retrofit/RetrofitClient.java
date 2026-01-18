@@ -1,5 +1,6 @@
 package com.example.filmoteca.Retrofit;
 
+import com.example.filmoteca.Api.MovieApi;
 import com.example.filmoteca.Api.SeriesApi;
 
 import okhttp3.OkHttpClient;
@@ -15,7 +16,7 @@ public class RetrofitClient {
 
     public static Retrofit getInstance() {
         if (retrofit == null) {
-            // Creamos un cliente OkHttp que añade el Token automáticamente
+
             OkHttpClient client = new OkHttpClient.Builder().addInterceptor(chain -> {
                 Request newRequest = chain.request().newBuilder()
                         .addHeader("Authorization", "Bearer " + TOKEN)
@@ -26,7 +27,7 @@ public class RetrofitClient {
 
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
-                    .client(client) // Usamos el cliente con el token
+                    .client(client)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }
@@ -35,5 +36,8 @@ public class RetrofitClient {
 
     public static SeriesApi getSeriesApi() {
         return getInstance().create(SeriesApi.class);
+    }
+    public static MovieApi getMovieApi(){
+        return getInstance().create(MovieApi.class);
     }
 }

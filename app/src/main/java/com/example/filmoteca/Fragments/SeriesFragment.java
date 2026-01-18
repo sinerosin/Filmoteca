@@ -61,7 +61,7 @@ public class SeriesFragment extends Fragment {
     }
 
     private void observarSeries() {
-        viewModel.informacionSerie.observe(getViewLifecycleOwner(), resource -> {
+        viewModel.series.observe(getViewLifecycleOwner(), resource -> {
             if (resource == null) return;
 
             // Gestionamos los diferentes estados
