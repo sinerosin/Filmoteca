@@ -43,6 +43,11 @@ public class SeriesRepository {
             }
 
             @Override
+            public void onResponse(Call<Serie> call, Response<Serie> response) {
+
+            }
+
+            @Override
             public void onFailure(Call<Serie> call, Throwable t) {
                 callback.onResult(Resource.error("Fallo de red: " + t.getMessage()));
             }

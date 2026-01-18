@@ -5,17 +5,16 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.filmoteca.Model.Serie;
 import com.example.filmoteca.Repository.SeriesRepository;
+import com.example.filmoteca.Resource;
 
 import java.util.List;
 
 public class SerieViewModel extends ViewModel {
-    private SeriesRepository repository;
-    public MutableLiveData<List<Serie>> series = new MutableLiveData<>();
-    public MutableLiveData<Serie> serieSeleccionada = new MutableLiveData<>();
+    private final SeriesRepository repository;
+    MutableLiveData<Resource<Serie>> informacionSerie=new MutableLiveData<>();
 
     public SerieViewModel() {
         repository = new SeriesRepository();
-        series.setValue(repository.getSeries());
     }
     public void seleccionarSerie(Serie serie)  {
         serieSeleccionada.setValue(serie);
