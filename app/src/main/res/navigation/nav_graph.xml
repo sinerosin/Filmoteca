@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/tabFragment">
+
+    <fragment
+        android:id="@+id/tabFragment"
+        android:name="com.example.filmoteca.Fragments.TabFragment"
+        android:label="Explorar"
+        tools:layout="@layout/fragment_tab" />
+    <fragment
+        android:id="@+id/detailSerieFragment"
+        android:name="com.example.filmoteca.Fragments.DetailSerieFragment"
+        android:label="Detalle"
+        tools:layout="@layout/fragment_detail_serie" >
+    </fragment>
+    <fragment
+        android:id="@+id/pendienteFragment"
+        android:name="com.example.filmoteca.Fragments.PendienteFragment"
+        android:label="Pendiente"
+        tools:layout="@layout/fragment_pendiente" />
+    <fragment
+        android:id="@+id/seguimientoFragment"
+        android:name="com.example.filmoteca.Fragments.SeguimientoFragment"
+        android:label="Seguimiento"
+        tools:layout="@layout/fragment_seguimiento" />
+    <fragment
+        android:id="@+id/formFragment"
+        android:name="com.example.filmoteca.Fragments.FormFragment"
+        android:label="Añadir"
+        tools:layout="@layout/fragment_form" />
+    <fragment
+        android:id="@+id/detalleSeguimientoFragment"
+        android:name="com.example.filmoteca.DetalleSeguimientoFragment"
+        android:label="fragment_detalle_seguimiento"
+        tools:layout="@layout/fragment_detalle_seguimiento" />
+
+</navigation>

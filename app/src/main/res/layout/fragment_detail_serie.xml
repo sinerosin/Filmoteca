@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:background="@color/white"
+    android:padding="16dp"
+    tools:context=".Fragments.DetailSerieFragment">
+    <TextView
+        android:id="@+id/TituloDetalle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="22sp"
+        android:textColor="@color/morado"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp" />
+
+    <ImageView
+        android:id="@+id/ImagenDetalle"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:scaleType="fitCenter" />
+
+    <TextView
+        android:id="@+id/Estreno"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/morado"
+        android:textStyle="italic" />
+
+    <TextView
+        android:id="@+id/DescripcionDetalle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:layout_marginTop="16dp" />
+
+    <Button
+        android:id="@+id/btnTrailer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/dorado"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:text="Ver Tráiler en YouTube" />
+
+
+</LinearLayout >
