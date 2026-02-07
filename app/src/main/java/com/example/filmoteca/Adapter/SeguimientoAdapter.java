@@ -45,15 +45,14 @@ public class SeguimientoAdapter extends RecyclerView.Adapter<SeguimientoAdapter.
 
         Glide.with(holder.itemView.getContext())
                 .load(seguimiento.getPosterPath()).into(holder.binding.imagen);
-
+        holder.binding.descripcion.setText(seguimiento.getPosterPath());
         holder.binding.titulo.setText(seguimiento.getTitulo());
-        holder.binding.descripcion.setText(seguimiento.getOverview());
         holder.itemView.setOnClickListener(view -> {
 
             viewModel.seleccionarSeguimiento(seguimiento);
 
             NavController navController = Navigation.findNavController(view);
-            navController.navigate(R.id.detailSerieFragment);
+            navController.navigate(R.id.detalleSeguimientoFragment);
         });
     }
 
@@ -66,7 +65,11 @@ public class SeguimientoAdapter extends RecyclerView.Adapter<SeguimientoAdapter.
         this.seguimientoList = lista;
         notifyDataSetChanged();
     }
-
+    public void addSeguimientoList(List<Seguimiento> lista) {
+        int inicio = this.seguimientoList.size();
+        this.seguimientoList.addAll(lista);
+        notifyItemRangeInserted(inicio, lista.size());
+    }
     public static class SeguimientoViewHolder extends RecyclerView.ViewHolder {
         ViewholdePendienteBinding binding;
 

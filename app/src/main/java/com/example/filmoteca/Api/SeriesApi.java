@@ -34,4 +34,16 @@ public interface SeriesApi {
             @Query("language") String language,
             @Query("page") int page
     );
+
+    @GET("search/movie")
+    Call<MovieResponse> buscarPeliculas(
+            @Query("query") String query,
+            @Query("language") String language
+    );
+
+    @GET("search/tv")
+    Call<SerieResponse> buscarSeries(
+            @Query("query") String query,
+            @Query("language") String language
+    );
 }

@@ -9,6 +9,7 @@ import com.example.filmoteca.Model.MediaDao;
 import com.example.filmoteca.Model.MediaDatabase;
 import com.example.filmoteca.Model.Seguimiento;
 import com.example.filmoteca.Model.SeguimientoDao;
+import com.example.filmoteca.Model.SeguimientoDatabase;
 
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -20,6 +21,7 @@ public class MediaRepository {
     private Executor executor;
     public MediaRepository(Application application) {
         mediaDao = MediaDatabase.getInstance(application).mediaDao();
+        seguimientoDao= SeguimientoDatabase.getInstance(application).seguimientoDao();
         executor = Executors.newSingleThreadExecutor();
     }
     public void insertarMedia(Media media) {

@@ -56,15 +56,10 @@ public class PendienteFragment extends Fragment {
             if (listaMedia != null && !listaMedia.isEmpty()) {
                 adapter.addMediaList(listaMedia);
 
-            } else {
             }
         });
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
-    }
+
 
 }

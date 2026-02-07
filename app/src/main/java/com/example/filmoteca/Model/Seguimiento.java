@@ -16,18 +16,16 @@ public class Seguimiento implements Serializable {
     private float puntuacion;
     private String imagenRecuerdo;
     private String posterPath;
-    private String overview;
 
     public Seguimiento(String titulo, String tipo, String fechaVisualizacion,
                        float puntuacion, String imagenRecuerdo,
-                       String posterPath, String overview) {
+                       String posterPath ) {
         this.titulo = titulo;
         this.tipo = tipo;
         this.fechaVisualizacion = fechaVisualizacion;
         this.puntuacion = puntuacion;
         this.imagenRecuerdo = imagenRecuerdo;
         this.posterPath = posterPath;
-        this.overview = overview;
     }
 
     public int getIdInternal() { return idInternal; }
@@ -50,7 +48,4 @@ public class Seguimiento implements Serializable {
 
     public String getPosterPath() { return posterPath; }
     public void setPosterPath(String posterPath) { this.posterPath = posterPath; }
-
-    public String getOverview() { return overview; }
-    public void setOverview(String overview) { this.overview = overview; }
 }

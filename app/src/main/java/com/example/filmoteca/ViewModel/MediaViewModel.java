@@ -30,7 +30,7 @@ public class MediaViewModel extends AndroidViewModel {
 
         return mediaRepository.obtenerTodas();
     }
-    public LiveData<List<Seguimiento>> getListaSeguimiento() {
+    public LiveData<List<Seguimiento>> obtenerSeguimiento() {
         return mediaRepository.obtenerSeguimientos();
     }
 

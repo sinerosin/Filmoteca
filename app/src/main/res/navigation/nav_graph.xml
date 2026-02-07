@@ -33,8 +33,8 @@
         tools:layout="@layout/fragment_form" />
     <fragment
         android:id="@+id/detalleSeguimientoFragment"
-        android:name="com.example.filmoteca.DetalleSeguimientoFragment"
-        android:label="fragment_detalle_seguimiento"
+        android:name="com.example.filmoteca.Fragments.DetalleSeguimientoFragment"
+        android:label="Detalles"
         tools:layout="@layout/fragment_detalle_seguimiento" />
 
 </navigation>
