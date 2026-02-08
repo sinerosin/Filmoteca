@@ -1,6 +1,7 @@
 package com.example.filmoteca.Adapter;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +30,9 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
     private MovieViewModel viewModel;
     public MediaViewModel mediaViewModel ;
     private final LayoutInflater inflater;
+    private Context context;
     public MoviesAdapter(Context context,MovieViewModel viewModel,MediaViewModel mediaViewModel) {
+        this.context = context;
         this.inflater = LayoutInflater.from(context);
         this.viewModel = viewModel;
         this.mediaViewModel = mediaViewModel;
@@ -45,9 +48,15 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
     @Override
     public void onBindViewHolder(@NonNull MoviesAdapter.MovieViewHolder holder, int position) {
         Movie Movie =MovieList.get(position);
+        SharedPreferences prefs = context.getSharedPreferences("MisAjustes", Context.MODE_PRIVATE);
+        boolean soloWifi = prefs.getBoolean("solo_wifi", false);
+        if (!soloWifi) {
 
-        Glide.with(holder.itemView.getContext())
-                .load(Movie.getPoster_path()).into(holder.binding.imagen);
+            Glide.with(context).load(R.drawable.upload).into(holder.binding.imagen);
+        } else {
+
+            Glide.with(context).load(Movie.getPoster_path()).into(holder.binding.imagen);
+        }
 
         holder.binding.titulo.setText(Movie.getTitulo());
         holder.binding.descripcion.setText(Movie.getOverwiew());
@@ -62,6 +71,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
             Media media = new Media(Movie.getId(),Movie.getTitulo(),Movie.getOverwiew(),Movie.getFecha(),Movie.getPoster_path());
             mediaViewModel.insertarMedia(media);
         });
+
 
 
     }

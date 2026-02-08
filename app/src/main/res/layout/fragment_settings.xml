@@ -116,9 +116,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                app:useMaterialThemeColors="false"
                 app:thumbTint="@color/white"
-                app:trackTint="@color/dorado" />
+                app:trackTint="@color/dorado"
+                app:useMaterialThemeColors="false" />
         </RelativeLayout>
 
         <TextView

@@ -1,6 +1,7 @@
 package com.example.filmoteca.Adapter;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,8 +25,10 @@ public class SeguimientoAdapter extends RecyclerView.Adapter<SeguimientoAdapter.
     private List<Seguimiento> seguimientoList;
     private MediaViewModel viewModel;
     private final LayoutInflater inflater;
+    private Context context;
 
     public SeguimientoAdapter(Context context, MediaViewModel viewModel) {
+        this.context = context;
         this.inflater = LayoutInflater.from(context);
         this.viewModel = viewModel;
         this.seguimientoList = new ArrayList<>();
@@ -43,8 +46,15 @@ public class SeguimientoAdapter extends RecyclerView.Adapter<SeguimientoAdapter.
     public void onBindViewHolder(@NonNull SeguimientoViewHolder holder, int position) {
         Seguimiento seguimiento = seguimientoList.get(position);
 
-        Glide.with(holder.itemView.getContext())
-                .load(seguimiento.getPosterPath()).into(holder.binding.imagen);
+        SharedPreferences prefs = context.getSharedPreferences("MisAjustes", Context.MODE_PRIVATE);
+        boolean soloWifi = prefs.getBoolean("solo_wifi", false);
+        if (!soloWifi) {
+
+            Glide.with(context).load(R.drawable.upload).into(holder.binding.imagen);
+        } else {
+
+            Glide.with(context).load(seguimiento.getPosterPath()).into(holder.binding.imagen);
+        }
         holder.binding.descripcion.setText(seguimiento.getPosterPath());
         holder.binding.titulo.setText(seguimiento.getTitulo());
         holder.itemView.setOnClickListener(view -> {

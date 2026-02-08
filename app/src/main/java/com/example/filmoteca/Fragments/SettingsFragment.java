@@ -45,12 +45,7 @@ public class SettingsFragment extends Fragment {
         binding.btnGuardarAjustes.setOnClickListener(v -> guardarPreferencias());
         binding.btnResetear.setOnClickListener(v -> resetearPreferencias());
     }
-    private void configurarSelectorIdioma() {
-
-        String[] idiomas = {"Español (España)", "English (USA)", "Français (France)", "Deutsch (Deutschland)"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, idiomas);
-        binding.spinnerIdioma.setAdapter(adapter);
-    }
+   
     private void cargarPreferencias() {
 
         binding.etUsername.setText(sharedPreferences.getString("nombre_usuario", ""));
@@ -61,14 +56,19 @@ public class SettingsFragment extends Fragment {
         if (esOscuro) {
             binding.toggleGroupTema.check(R.id.btnTemaOscuro);
         } else {
-            binding.toggleGroupTema.check(R.id.btnTemaClaro);
+            binding.toggleGroupTema.check(R.id.btnTemaClaro);a
         }
     }
     private void guardarPreferencias() {
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         editor.putString("nombre_usuario", binding.etUsername.getText().toString());
-        editor.putString("idioma_pref", binding.spinnerIdioma.getText().toString());
+        String idiomaSeleccionado = binding.spinnerIdioma.getText().toString();
+        String codigoIdioma = "es-ES";
+        if (idiomaSeleccionado.contains("English")) codigoIdioma = "en-US";
+        if (idiomaSeleccionado.contains("Français")) codigoIdioma = "fr-FR";
+        if (idiomaSeleccionado.contains("Deutsch")) codigoIdioma = "de-DE";
+        editor.putString("idioma_pref", codigoIdioma);
         editor.putBoolean("solo_wifi", binding.switchWifi.isChecked());
 
         boolean temaOscuro = binding.toggleGroupTema.getCheckedButtonId() == R.id.btnTemaOscuro;

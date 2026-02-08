@@ -1,6 +1,7 @@
 package com.example.filmoteca.Adapter;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,7 +29,9 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SerieViewH
     private SerieViewModel viewModel;
     public MediaViewModel mediaViewModel ;
     private final LayoutInflater inflater;
+    private Context context;
 public SeriesAdapter(Context context,SerieViewModel viewModel,MediaViewModel mediaViewModel) {
+        this.context = context;
         this.inflater = LayoutInflater.from(context);
         this.viewModel = viewModel;
         this.mediaViewModel = mediaViewModel;
@@ -45,8 +48,15 @@ public SeriesAdapter(Context context,SerieViewModel viewModel,MediaViewModel med
     public void onBindViewHolder(@NonNull SerieViewHolder holder, int position) {
        Serie serie =serieList.get(position);
 
-       Glide.with(holder.itemView.getContext())
-               .load(serie.getPoster_path()).into(holder.binding.imagen);
+        SharedPreferences prefs = context.getSharedPreferences("MisAjustes", Context.MODE_PRIVATE);
+        boolean soloWifi = prefs.getBoolean("solo_wifi", false);
+        if (!soloWifi) {
+
+            Glide.with(context).load(R.drawable.upload).into(holder.binding.imagen);
+        } else {
+
+            Glide.with(context).load(serie.getPoster_path()).into(holder.binding.imagen);
+        }
 
        holder.binding.titulo.setText(serie.getName());
        holder.binding.descripcion.setText(serie.getOverwiew());
