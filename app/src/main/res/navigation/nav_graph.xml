@@ -36,5 +36,10 @@
         android:name="com.example.filmoteca.Fragments.DetalleSeguimientoFragment"
         android:label="Detalles"
         tools:layout="@layout/fragment_detalle_seguimiento" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.filmoteca.Fragments.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" />
 
 </navigation>
