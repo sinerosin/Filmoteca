@@ -60,12 +60,11 @@ public class SeriesRepository {
             public void onResponse(Call<Serie.VideoResponse> call, Response<Serie.VideoResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     String foundKey = null;
-                    // Buscamos en la lista de resultados
                     for (Serie.serieVideo video : response.body().getResults()) {
                         if ("Trailer".equalsIgnoreCase(video.getType()) &&
                                 "YouTube".equalsIgnoreCase(video.getSite())) {
                             foundKey = video.getKey();
-                            break; // Detener al encontrar el primer trailer
+                            break;
                         }
                     }
                     callback.onKeyReceived(foundKey);

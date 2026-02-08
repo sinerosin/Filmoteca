@@ -28,7 +28,7 @@ public class MovieViewModel extends ViewModel {
             if (result.status == Resource.Status.SUCCESS && result.data != null) {
                 List<Movie> listaMovie = result.data;
 
-                // Para cada serie en la lista, buscamos su trailer
+
                 for (Movie m : listaMovie) {
                     repository.getTrailer(m.getId(), key -> {
                         if (key != null) {
@@ -50,6 +50,6 @@ public class MovieViewModel extends ViewModel {
         movieSeleccionada.setValue(movie);
     }
     public void limpiarSeleccion() {
-        movieSeleccionada.setValue(null); // O movieSeleccionada, según el caso
+        movieSeleccionada.setValue(null);
     }
 }

@@ -32,15 +32,10 @@ public class SerieViewModel extends AndroidViewModel {
             if (result.status == Resource.Status.SUCCESS && result.data != null) {
                 List<Serie> listaSeries = result.data;
 
-                // Para cada serie en la lista, buscamos su trailer
                 for (Serie s : listaSeries) {
                     repository.getTrailer(s.getId(), key -> {
                         if (key != null) {
-                            // Guardamos la key en el objeto serie
                             s.setVideoKey(key);
-
-                            // Notificamos a la UI que los datos han cambiado
-                            // postValue se usa para actualizar la lista completa con las keys nuevas
                             series.postValue(Resource.success(listaSeries));
                         }
                     });

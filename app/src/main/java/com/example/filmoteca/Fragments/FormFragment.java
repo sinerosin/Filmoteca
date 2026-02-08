@@ -110,7 +110,7 @@ public class FormFragment extends Fragment {
     }
     private void actualizarColores(boolean peliculaSeleccionada) {
         int colorDorado = ContextCompat.getColor(requireContext(), R.color.dorado);
-        int colorMorado = ContextCompat.getColor(requireContext(), R.color.morado); // Cambia por tu color exacto
+        int colorMorado = ContextCompat.getColor(requireContext(), R.color.morado);
 
         if (peliculaSeleccionada) {
             binding.btnPelicula.setBackgroundTintList(ColorStateList.valueOf(colorDorado));

@@ -70,7 +70,6 @@ public class SeriesFragment extends Fragment {
         viewModel.series.observe(getViewLifecycleOwner(), resource -> {
             if (resource == null) return;
 
-            // Gestionamos los diferentes estados
             switch (resource.status) {
                 case LOADING:
                     binding.progressLoading.setVisibility(View.VISIBLE);
@@ -97,18 +96,15 @@ public class SeriesFragment extends Fragment {
             }
         });
     }private void configurarPaginacion() {
-        // Añadimos un listener al RecyclerView para detectar el scroll
+
         binding.recyclerViewSerie.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
 
-                // Comprobamos si el usuario ha llegado al final del RecyclerView.
-                // canScrollVertically(1) devuelve false cuando NO se puede seguir bajando.
                 if (!recyclerView.canScrollVertically(1)) {
 
-                    // Si estamos en el final, pedimos al ViewModel que cargue la siguiente página
                     viewModel.cargarSeries();
                 }
             }
