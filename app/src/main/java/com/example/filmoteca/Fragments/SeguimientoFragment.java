@@ -7,13 +7,17 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.filmoteca.Adapter.SeguimientoAdapter;
+import com.example.filmoteca.Model.Seguimiento;
 import com.example.filmoteca.R;
 import com.example.filmoteca.ViewModel.MediaViewModel;
 import com.example.filmoteca.databinding.FragmentSeguimientoBinding;
@@ -50,6 +54,21 @@ public class SeguimientoFragment extends Fragment {
 
         binding.recyclerViewSeguimiento.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerViewSeguimiento.setAdapter(adapter);
+        ItemTouchHelper helper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView rv, @NonNull RecyclerView.ViewHolder vh, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+                Seguimiento s = adapter.getSeguimientoAt(position);
+                viewModel.eliminarSeguimiento(s);
+                Toast.makeText(getContext(), "Eliminado: " + s.getTitulo(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        helper.attachToRecyclerView(binding.recyclerViewSeguimiento);
     }
 
     private void observarSeguimientos() {

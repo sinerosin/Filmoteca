@@ -24,11 +24,11 @@ public class MovieRepository {
     public interface MovieCallback {
         void onResult(Resource<List<Movie>> result);
     }
-    public void getMovie(MovieRepository.MovieCallback callback) {
+    public void getMovie(MovieRepository.MovieCallback callback,String idioma) {
         callback.onResult(Resource.loading());
 
 
-        api.getMovie("es-ES", PAGE).enqueue(new Callback<MovieResponse>() {
+        api.getMovie(idioma, PAGE).enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {

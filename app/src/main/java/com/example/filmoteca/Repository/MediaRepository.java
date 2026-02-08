@@ -38,5 +38,7 @@ public class MediaRepository {
     public LiveData<List<Seguimiento>> obtenerSeguimientos() {
         return seguimientoDao.obtenerSeguimientos();
     }
-
+    public void eliminarSeguimiento(Seguimiento seguimiento) {
+        executor.execute(() -> seguimientoDao.eliminarSeguimiento(seguimiento));
+    }
 }

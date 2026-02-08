@@ -56,7 +56,7 @@ public class SettingsFragment extends Fragment {
         if (esOscuro) {
             binding.toggleGroupTema.check(R.id.btnTemaOscuro);
         } else {
-            binding.toggleGroupTema.check(R.id.btnTemaClaro);a
+            binding.toggleGroupTema.check(R.id.btnTemaClaro);
         }
     }
     private void guardarPreferencias() {

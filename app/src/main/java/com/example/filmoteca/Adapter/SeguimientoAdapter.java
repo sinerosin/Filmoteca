@@ -88,4 +88,7 @@ public class SeguimientoAdapter extends RecyclerView.Adapter<SeguimientoAdapter.
             binding = ViewholdePendienteBinding.bind(itemView);
         }
     }
+    public Seguimiento getSeguimientoAt(int position) {
+        return seguimientoList.get(position);
+    }
 }

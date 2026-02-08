@@ -46,4 +46,7 @@ public class MediaViewModel extends AndroidViewModel {
     public void seleccionarSeguimiento(Seguimiento seguimiento) {
         seguimientoSeleccionado.setValue(seguimiento);
     }
+    public void eliminarSeguimiento(Seguimiento seguimiento) {
+        mediaRepository.eliminarSeguimiento(seguimiento);
+    }
 }
