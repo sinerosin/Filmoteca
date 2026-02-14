@@ -29,11 +29,11 @@ public class SeriesRepository {
     public interface SerieCallback {
         void onResult(Resource<List<Serie>> result);
     }
-    public void getSeries(SerieCallback callback,String idioma) {
+    public void getSeries(SerieCallback callback) {
         callback.onResult(Resource.loading());
 
 
-        api.getSeries(idioma, PAGE).enqueue(new Callback<SerieResponse>() {
+        api.getSeries("es-ES", PAGE).enqueue(new Callback<SerieResponse>() {
             @Override
             public void onResponse(Call<SerieResponse> call, Response<SerieResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {

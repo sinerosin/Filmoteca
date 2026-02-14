@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "837662553074",
+    "project_id": "android-b09e6",
+    "storage_bucket": "android-b09e6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:837662553074:android:04bd23e8013943c19fb16b",
+        "android_client_info": {
+          "package_name": "com.example.filmoteca"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDh4Q-ANyN31ww7he3rlCQ5OLcVz5uUxGk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:837662553074:android:e2d9aa8782def9ef9fb16b",
+        "android_client_info": {
+          "package_name": "filmoteca.com"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDh4Q-ANyN31ww7he3rlCQ5OLcVz5uUxGk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
