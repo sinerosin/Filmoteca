@@ -27,6 +27,7 @@ import com.example.filmoteca.Model.Serie;
 import com.example.filmoteca.R;
 import com.example.filmoteca.Response.MovieResponse;
 import com.example.filmoteca.Response.SerieResponse;
+import com.example.filmoteca.ViewModel.AuthViewModel;
 import com.example.filmoteca.ViewModel.MediaViewModel;
 import com.example.filmoteca.databinding.FragmentFormBinding;
 
@@ -41,7 +42,8 @@ import retrofit2.Response;
 public class FormFragment extends Fragment {
     FragmentFormBinding binding;
     private MediaViewModel mediaViewModel;
-
+    private AuthViewModel authViewModel;
+    private String user=null;
 
     private String imagen= null;
     private String poster=null;
@@ -69,6 +71,10 @@ public class FormFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mediaViewModel = new ViewModelProvider(requireActivity()).get(MediaViewModel.class);
+        authViewModel = new ViewModelProvider(requireActivity()).get(AuthViewModel.class);
+        if (authViewModel.getCurrentUser() != null) {
+            user = authViewModel.getCurrentUser().getUid();
+        }
         binding.toggleGroup.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
             if (isChecked) {
                 if (checkedId == R.id.btnPelicula) {
@@ -188,7 +194,8 @@ public class FormFragment extends Fragment {
                 binding.dateInputLayout.getEditText().getText().toString(),
                 binding.ratingBar.getRating(),
                 imagen,
-                poster
+                poster,
+                user
         );
 
         mediaViewModel.insertarSeguimiento(s);

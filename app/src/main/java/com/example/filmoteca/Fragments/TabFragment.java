@@ -18,9 +18,11 @@ import android.view.ViewGroup;
 
 import com.example.filmoteca.Model.Media;
 import com.example.filmoteca.R;
+import com.example.filmoteca.ViewModel.AuthViewModel;
 import com.example.filmoteca.ViewModel.MediaViewModel;
 import com.example.filmoteca.databinding.FragmentTabBinding;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Random;
 
@@ -28,6 +30,7 @@ import java.util.Random;
 public class TabFragment extends Fragment {
     private FragmentTabBinding binding;
     MediaViewModel mediaViewModel;
+    private AuthViewModel authViewModel;
 
 
     @Override
@@ -80,13 +83,13 @@ public class TabFragment extends Fragment {
     }
     private void bienvenida() {
         SharedPreferences prefs = requireActivity().getSharedPreferences("MisAjustes", Context.MODE_PRIVATE);
-        String nombre = prefs.getString("nombre_usuario", ""); //
+        String nombre = prefs.getString("nombre_usuario", "");
 
         if (nombre.isEmpty()) {
             mostrarDialogoSinNombre();
         } else {
-
-            mediaViewModel.obtenerMedia().observe(getViewLifecycleOwner(), pendientes -> {
+            FirebaseUser user = authViewModel.getCurrentUser();
+            mediaViewModel.obtenerMedia(user.getUid()).observe(getViewLifecycleOwner(), pendientes -> {
                 if (pendientes != null && !pendientes.isEmpty()) {
                     Media aleatorio = pendientes.get(new Random().nextInt(pendientes.size()));
                     mostrarDialogoConPendientes(nombre, aleatorio);

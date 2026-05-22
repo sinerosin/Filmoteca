@@ -31,11 +31,14 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
     public MediaViewModel mediaViewModel ;
     private final LayoutInflater inflater;
     private Context context;
-    public MoviesAdapter(Context context,MovieViewModel viewModel,MediaViewModel mediaViewModel) {
+    private String currentUser;
+
+    public MoviesAdapter(Context context,MovieViewModel viewModel,MediaViewModel mediaViewModel,String currentUser) {
         this.context = context;
         this.inflater = LayoutInflater.from(context);
         this.viewModel = viewModel;
         this.mediaViewModel = mediaViewModel;
+        this.currentUser=currentUser;
         this.MovieList=new ArrayList<>();
     }
     @NonNull
@@ -48,7 +51,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
     @Override
     public void onBindViewHolder(@NonNull MoviesAdapter.MovieViewHolder holder, int position) {
         Movie Movie =MovieList.get(position);
-        SharedPreferences prefs = context.getSharedPreferences("MisAjustes", Context.MODE_PRIVATE);
+        SharedPreferences prefs = context.getSharedPreferences("MisAjustes"+ currentUser, Context.MODE_PRIVATE);
         boolean soloWifi = prefs.getBoolean("solo_wifi", false);
         if (!soloWifi) {
 
@@ -68,7 +71,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
             navController.navigate(R.id.detailSerieFragment);
         });
         holder.binding.btnAniadir.setOnClickListener(view -> {
-            Media media = new Media(Movie.getId(),Movie.getTitulo(),Movie.getOverwiew(),Movie.getFecha(),Movie.getPoster_path());
+            Media media = new Media(Movie.getId(),Movie.getTitulo(),Movie.getOverwiew(),Movie.getFecha(),Movie.getPoster_path(), currentUser);
             mediaViewModel.insertarMedia(media);
         });
 

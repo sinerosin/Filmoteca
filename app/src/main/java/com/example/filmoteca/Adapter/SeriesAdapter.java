@@ -17,6 +17,7 @@ import com.example.filmoteca.Model.Media;
 import com.example.filmoteca.Model.Serie;
 import com.example.filmoteca.R;
 import com.example.filmoteca.Response.SerieResponse;
+import com.example.filmoteca.ViewModel.AuthViewModel;
 import com.example.filmoteca.ViewModel.MediaViewModel;
 import com.example.filmoteca.ViewModel.SerieViewModel;
 import com.example.filmoteca.databinding.ViewholderSerieBinding;
@@ -30,12 +31,14 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SerieViewH
     public MediaViewModel mediaViewModel ;
     private final LayoutInflater inflater;
     private Context context;
-public SeriesAdapter(Context context,SerieViewModel viewModel,MediaViewModel mediaViewModel) {
+    private String currentUser;
+public SeriesAdapter(Context context,SerieViewModel viewModel,MediaViewModel mediaViewModel,String currentUser) {
         this.context = context;
         this.inflater = LayoutInflater.from(context);
         this.viewModel = viewModel;
         this.mediaViewModel = mediaViewModel;
         this.serieList=new ArrayList<>();
+        this.currentUser=currentUser;
     }
     @NonNull
     @Override
@@ -48,7 +51,7 @@ public SeriesAdapter(Context context,SerieViewModel viewModel,MediaViewModel med
     public void onBindViewHolder(@NonNull SerieViewHolder holder, int position) {
        Serie serie =serieList.get(position);
 
-        SharedPreferences prefs = context.getSharedPreferences("MisAjustes", Context.MODE_PRIVATE);
+        SharedPreferences prefs = context.getSharedPreferences("MisAjustes"+ currentUser, Context.MODE_PRIVATE);
         boolean soloWifi = prefs.getBoolean("solo_wifi", false);
         if (!soloWifi) {
 
@@ -69,7 +72,7 @@ public SeriesAdapter(Context context,SerieViewModel viewModel,MediaViewModel med
        });
        holder.binding.btnAniadir.setOnClickListener(view -> {
 
-           Media media = new Media(serie.getId(),serie.getName(),serie.getOverwiew(),serie.estreno(),serie.getPoster_path());
+           Media media = new Media(serie.getId(),serie.getName(),serie.getOverwiew(),serie.estreno(),serie.getPoster_path(), currentUser);
           mediaViewModel.insertarMedia(media);
        });
 

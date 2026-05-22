@@ -12,7 +12,12 @@
           "package_name": "com.example.filmoteca"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "837662553074-jmg66qcepb1c0p672fb3qsmic3e0sa12.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDh4Q-ANyN31ww7he3rlCQ5OLcVz5uUxGk"
@@ -20,26 +25,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:837662553074:android:e2d9aa8782def9ef9fb16b",
-        "android_client_info": {
-          "package_name": "filmoteca.com"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDh4Q-ANyN31ww7he3rlCQ5OLcVz5uUxGk"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "837662553074-jmg66qcepb1c0p672fb3qsmic3e0sa12.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

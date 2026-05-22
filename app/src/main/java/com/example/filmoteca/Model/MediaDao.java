@@ -20,8 +20,8 @@ public interface MediaDao {
     @Delete
     void eliminar(Media media);
 
-    @Query("SELECT * FROM media ")
-    LiveData<List<Media>> obtenerTodos();
+    @Query("SELECT * FROM media WHERE user = :user ")
+    LiveData<List<Media>> obtenerTodos(String user);
     @Query("SELECT * FROM media WHERE title = :nombre ")
     LiveData<Media> buscarPorNombre(String nombre);
 

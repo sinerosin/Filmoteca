@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import com.example.filmoteca.Adapter.MoviesAdapter;
 import com.example.filmoteca.Adapter.SeriesAdapter;
 import com.example.filmoteca.R;
+import com.example.filmoteca.ViewModel.AuthViewModel;
 import com.example.filmoteca.ViewModel.MediaViewModel;
 import com.example.filmoteca.ViewModel.MovieViewModel;
 import com.example.filmoteca.ViewModel.SerieViewModel;
@@ -29,6 +30,7 @@ public class MovieFragment extends Fragment {
     private MoviesAdapter adapter;
     private MovieViewModel viewModel;
     private MediaViewModel mediaViewModel;
+    private AuthViewModel authViewModel;
 
 
     @Override
@@ -43,8 +45,10 @@ public class MovieFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        authViewModel = new ViewModelProvider(requireActivity()).get(AuthViewModel.class);
         viewModel = new ViewModelProvider(requireActivity()).get(MovieViewModel.class);
         mediaViewModel=new ViewModelProvider(requireActivity()).get(MediaViewModel.class);
+
 
         configurarRecyclerView();
         observarMovies();
@@ -55,7 +59,11 @@ public class MovieFragment extends Fragment {
     }
 
     private void configurarRecyclerView() {
-        adapter = new MoviesAdapter(requireContext(),viewModel,mediaViewModel);
+        String user = "";
+        if (authViewModel.getCurrentUser() != null) {
+            user = authViewModel.getCurrentUser().getUid();
+        }
+        adapter = new MoviesAdapter(requireContext(),viewModel,mediaViewModel,user);
         binding.recyclerViewMovie.setAdapter(adapter);
         binding.recyclerViewMovie.setLayoutManager(new LinearLayoutManager(getContext()));
     }

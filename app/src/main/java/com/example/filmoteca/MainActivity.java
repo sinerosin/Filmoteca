@@ -40,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
             goToLogin();
             return;
         }
-        //inicializarBotonLogout();
         setSupportActionBar(binding.toolbar);
 
         navController = ((NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment)).getNavController();
@@ -65,12 +64,6 @@ public class MainActivity extends AppCompatActivity {
         return NavigationUI.navigateUp(navController, appBarConfiguration)
                 || super.onSupportNavigateUp();
     }
-    /*private void inicializarBotonLogout() {
-        binding.logoutButton.setOnClickListener(v -> {
-            viewModel.logout();
-            goToLogin();
-        });
-    }*/
     private void goToLogin() {
         startActivity(new Intent(this, LoginActivity.class));
         finish();

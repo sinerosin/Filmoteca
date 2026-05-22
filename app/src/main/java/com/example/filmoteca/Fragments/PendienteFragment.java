@@ -14,9 +14,11 @@ import android.view.ViewGroup;
 
 import com.example.filmoteca.Adapter.MediaAdapter;
 import com.example.filmoteca.R;
+import com.example.filmoteca.ViewModel.AuthViewModel;
 import com.example.filmoteca.ViewModel.MediaViewModel;
 import com.example.filmoteca.ViewModel.MovieViewModel;
 import com.example.filmoteca.databinding.FragmentPendienteBinding;
+import com.google.firebase.auth.FirebaseUser;
 
 
 public class PendienteFragment extends Fragment {
@@ -24,6 +26,7 @@ public class PendienteFragment extends Fragment {
     FragmentPendienteBinding binding;
     private MediaViewModel viewModel;
     private MediaAdapter adapter;
+    private AuthViewModel authViewModel;
 
 
 
@@ -37,6 +40,7 @@ public class PendienteFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        authViewModel = new ViewModelProvider(requireActivity()).get(AuthViewModel.class);
         viewModel = new ViewModelProvider(requireActivity()).get(MediaViewModel.class);
         configurarRecyclerView();
         observarMedia();
@@ -51,15 +55,20 @@ public class PendienteFragment extends Fragment {
     }
 
     private void observarMedia() {
-
-        viewModel.obtenerMedia().observe(getViewLifecycleOwner(), listaMedia -> {
-            if (listaMedia != null && !listaMedia.isEmpty()) {
-                adapter.addMediaList(listaMedia);
-
-            }
-        });
+        FirebaseUser user = authViewModel.getCurrentUser();
+        if (user != null) {
+            viewModel.obtenerMedia(user.getUid()).observe(getViewLifecycleOwner(), listaMedia -> {
+                if (listaMedia != null) {
+                    adapter.addMediaList(listaMedia);
+                }
+            });
+        }
     }
 
-
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
 
 }

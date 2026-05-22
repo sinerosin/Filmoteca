@@ -53,6 +53,57 @@
             android:textColor="@color/black"
             android:textStyle="bold"
             android:text="Ver Tráiler en YouTube" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="16dp"
+            android:background="#DDDDDD" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Comentarios de la comunidad"
+            android:textColor="@color/morado"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Entrada de texto y botón para enviar un comentario -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
+
+            <EditText
+                android:id="@+id/etNuevoComentario"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Escribe un comentario..."
+                android:inputType="textCapSentences"
+                android:textColor="@color/black"
+                android:maxLines="3" />
+
+            <ImageButton
+                android:id="@+id/btnEnviarComentario"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@android:drawable/ic_menu_send"
+                android:contentDescription="Enviar comentario" />
+        </LinearLayout>
+
+        <!-- Listado donde aparecerán los comentarios cargados de Firestore -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewComentarios"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:scrollbars="vertical"
+            android:background="#F9F9F9"
+            android:padding="4dp" />
     </LinearLayout>
 </ScrollView>

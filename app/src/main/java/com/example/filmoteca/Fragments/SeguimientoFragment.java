@@ -19,13 +19,16 @@ import android.widget.Toast;
 import com.example.filmoteca.Adapter.SeguimientoAdapter;
 import com.example.filmoteca.Model.Seguimiento;
 import com.example.filmoteca.R;
+import com.example.filmoteca.ViewModel.AuthViewModel;
 import com.example.filmoteca.ViewModel.MediaViewModel;
 import com.example.filmoteca.databinding.FragmentSeguimientoBinding;
+import com.google.firebase.auth.FirebaseUser;
 
 public class SeguimientoFragment extends Fragment {
     private NavController navController;
     private FragmentSeguimientoBinding binding;
     private MediaViewModel viewModel;
+    private AuthViewModel authViewModel;
     private SeguimientoAdapter adapter;
 
     @Override
@@ -37,7 +40,7 @@ public class SeguimientoFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        authViewModel = new ViewModelProvider(requireActivity()).get(AuthViewModel.class);
         viewModel = new ViewModelProvider(requireActivity()).get(MediaViewModel.class);
         navController = Navigation.findNavController(view);
 
@@ -72,8 +75,8 @@ public class SeguimientoFragment extends Fragment {
     }
 
     private void observarSeguimientos() {
-
-        viewModel.obtenerSeguimiento().observe(getViewLifecycleOwner(), listaSeguimiento -> {
+        FirebaseUser user = authViewModel.getCurrentUser();
+        viewModel.obtenerSeguimiento(user.getUid()).observe(getViewLifecycleOwner(), listaSeguimiento -> {
             if (listaSeguimiento != null && !listaSeguimiento.isEmpty()) {
 
                 adapter.addSeguimientoList(listaSeguimiento);

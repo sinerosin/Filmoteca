@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:layout_marginBottom="8dp"
+    android:background="@android:color/white"
+    android:elevation="1dp">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp">
+
+        <TextView
+            android:id="@+id/tvComentarioUser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:text="Nombre de Usuario"
+            android:textColor="@color/morado"
+            android:textStyle="bold"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tvComentarioFecha"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="22/05/2026 11:00"
+            android:textColor="#888888"
+            android:textSize="12sp"
+            android:textStyle="italic" />
+    </RelativeLayout>
+    <TextView
+        android:id="@+id/tvComentarioMensaje"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Este es el contenido del mensaje enviado por el usuario."
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        android:layout_marginTop="2dp"/>
+
+</LinearLayout>

@@ -9,6 +9,7 @@ import com.example.filmoteca.Model.Serie;
 import com.example.filmoteca.Api.Resource;
 import com.example.filmoteca.Response.SerieResponse;
 import com.example.filmoteca.Api.RetrofitClient;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -19,6 +20,7 @@ import retrofit2.Response;
 
 public class SeriesRepository {
     private final SeriesApi api;
+    private FirebaseFirestore db;
 
     private int PAGE=1;
     public SeriesRepository(Application application) {

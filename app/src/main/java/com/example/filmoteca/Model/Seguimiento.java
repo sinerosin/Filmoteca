@@ -9,7 +9,7 @@ public class Seguimiento implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
     private int idInternal;
-
+    private String user;
     private String titulo;
     private String tipo;
     private String fechaVisualizacion;
@@ -19,13 +19,14 @@ public class Seguimiento implements Serializable {
 
     public Seguimiento(String titulo, String tipo, String fechaVisualizacion,
                        float puntuacion, String imagenRecuerdo,
-                       String posterPath ) {
+                       String posterPath,String user ) {
         this.titulo = titulo;
         this.tipo = tipo;
         this.fechaVisualizacion = fechaVisualizacion;
         this.puntuacion = puntuacion;
         this.imagenRecuerdo = imagenRecuerdo;
         this.posterPath = posterPath;
+        this.user=user;
     }
 
     public int getIdInternal() { return idInternal; }
@@ -48,4 +49,11 @@ public class Seguimiento implements Serializable {
 
     public String getPosterPath() { return posterPath; }
     public void setPosterPath(String posterPath) { this.posterPath = posterPath; }
+    public String getUser() {
+        return user;
+    }
+    public void setUser(String user) {
+        this.user = user;
+    }
+
 }

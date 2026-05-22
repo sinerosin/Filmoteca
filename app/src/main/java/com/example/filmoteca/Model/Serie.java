@@ -20,6 +20,14 @@ public class Serie  {
 
     private String first_air_date ;
     private String serieVideo;
+    public Serie(){}
+    public Serie(int id,String name,String overwiew,String poster_path,String first_air_date){
+        this.id=id;
+        this.name=name;
+        this.overwiew=overwiew;
+        this.poster_path=poster_path;
+        this.first_air_date=first_air_date;
+    }
     public void setVideoKey(String serieVideo){
         this.serieVideo=serieVideo;
 
@@ -63,5 +71,7 @@ public class Serie  {
         private List<serieVideo> results;
         public List<serieVideo> getResults() { return results; }
     }
+
+
 }
 
