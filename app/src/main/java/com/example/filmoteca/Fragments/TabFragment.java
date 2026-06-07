@@ -26,24 +26,27 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Random;
 
-
 public class TabFragment extends Fragment {
     private FragmentTabBinding binding;
-    MediaViewModel mediaViewModel;
+    private MediaViewModel mediaViewModel;
     private AuthViewModel authViewModel;
 
+    private static boolean mostrada = false;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentTabBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         mediaViewModel = new ViewModelProvider(requireActivity()).get(MediaViewModel.class);
+        authViewModel = new ViewModelProvider(requireActivity()).get(AuthViewModel.class);
+
         establecerAdaptadorViewPager();
         vincularTabLayoutConViewPager();
         bienvenida();
@@ -81,29 +84,38 @@ public class TabFragment extends Fragment {
                     }
                 }).attach();
     }
-    private void bienvenida() {
-        SharedPreferences prefs = requireActivity().getSharedPreferences("MisAjustes", Context.MODE_PRIVATE);
-        String nombre = prefs.getString("nombre_usuario", "");
 
-        if (nombre.isEmpty()) {
-            mostrarDialogoSinNombre();
-        } else {
-            FirebaseUser user = authViewModel.getCurrentUser();
-            mediaViewModel.obtenerMedia(user.getUid()).observe(getViewLifecycleOwner(), pendientes -> {
-                if (pendientes != null && !pendientes.isEmpty()) {
-                    Media aleatorio = pendientes.get(new Random().nextInt(pendientes.size()));
-                    mostrarDialogoConPendientes(nombre, aleatorio);
-                }
-            });
-        }
+    private void bienvenida() {
+        if (mostrada) return;
+        FirebaseUser user = authViewModel.getCurrentUser();
+        if (user == null) return;
+
+        mediaViewModel.obtenerMedia(user.getUid()).observe(getViewLifecycleOwner(), pendientes -> {
+            if (mostrada) return;
+            SharedPreferences prefs = requireActivity().getSharedPreferences("MisAjustes", Context.MODE_PRIVATE);
+            String nombre = prefs.getString("nombre_usuario", "");
+            if (nombre.isEmpty() && user.getDisplayName() != null) {
+                nombre = user.getDisplayName();
+            }
+            if (nombre.isEmpty()) {
+                nombre = "Usuario";
+            }
+            if (pendientes == null || pendientes.isEmpty()) {
+                mostrada = true;
+                mostrarDialogoSinPendiente(nombre);
+            } else {
+                mostrada = true;
+                Media aleatorio = pendientes.get(new Random().nextInt(pendientes.size()));
+                mostrarDialogoConPendientes(nombre, aleatorio);
+            }
+        });
     }
 
-    private void mostrarDialogoSinNombre() {
+    private void mostrarDialogoSinPendiente(String nombre) {
         new AlertDialog.Builder(requireContext())
-                .setTitle("¡Hola!")
+                .setTitle("¡Hola! " + nombre)
                 .setMessage("Para personalizar tu experiencia, puedes configurar tu nombre en los ajustes. ¿Quieres hacerlo ahora?")
                 .setPositiveButton("Ir a Ajustes", (dialog, which) -> {
-
                     Navigation.findNavController(requireView()).navigate(R.id.settingsFragment);
                 })
                 .setNegativeButton("Más tarde", null)

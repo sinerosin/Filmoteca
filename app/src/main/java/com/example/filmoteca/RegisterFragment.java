@@ -6,12 +6,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
@@ -60,7 +60,11 @@ public class RegisterFragment extends Fragment {
             actualizarUI(state.loading);
 
             if (state.error != null) {
-                Toast.makeText(getContext(), state.error, Toast.LENGTH_SHORT).show();
+                new AlertDialog.Builder(requireContext())
+                        .setTitle("Error de Registro")
+                        .setMessage(state.error)
+                        .setPositiveButton("Aceptar", null)
+                        .show();
             }
 
             if (state.user != null) {
@@ -89,18 +93,37 @@ public class RegisterFragment extends Fragment {
         binding.btnBack.setOnClickListener(v -> Navigation.findNavController(v).popBackStack());
         binding.tvLoginLink.setOnClickListener(v -> Navigation.findNavController(v).popBackStack());
     }
-
     private boolean validarCampos(String name, String email, String pass, String confirm) {
         if (name.isEmpty() || email.isEmpty() || pass.isEmpty()) {
-            Toast.makeText(getContext(), "Rellena todos los campos", Toast.LENGTH_SHORT).show();
+            new AlertDialog.Builder(requireContext())
+                    .setTitle("Campos Incompletos")
+                    .setMessage("Por favor, rellena todos los campos obligatorios.")
+                    .setPositiveButton("Aceptar", null)
+                    .show();
             return false;
         }
-        if (pass.length() < 6) {
-            Toast.makeText(getContext(), "La contraseña debe tener al menos 6 caracteres", Toast.LENGTH_SHORT).show();
+
+        String regexContrasena = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$";
+
+        if (!pass.matches(regexContrasena)) {
+            new AlertDialog.Builder(requireContext())
+                    .setTitle("Contraseña No Válida")
+                    .setMessage("La contraseña debe cumplir las siguientes políticas de seguridad:\n\n" +
+                            "• Mínimo 8 caracteres de longitud.\n" +
+                            "• Al menos una letra mayúscula.\n" +
+                            "• Al menos una letra minúscula.\n" +
+                            "• Al menos un dígito numérico.")
+                    .setPositiveButton("Aceptar", null)
+                    .show();
             return false;
         }
+
         if (!pass.equals(confirm)) {
-            Toast.makeText(getContext(), "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
+            new AlertDialog.Builder(requireContext())
+                    .setTitle("Error de Validación")
+                    .setMessage("Las contraseñas introducidas no coinciden.")
+                    .setPositiveButton("Aceptar", null)
+                    .show();
             return false;
         }
         return true;
@@ -131,7 +154,11 @@ public class RegisterFragment extends Fragment {
                                 viewModel.loginWithGoogle(account.getIdToken());
                             }
                         } catch (ApiException e) {
-                            Toast.makeText(getContext(), "Error Google: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            new AlertDialog.Builder(requireContext())
+                                    .setTitle("Error Google")
+                                    .setMessage("No se pudo conectar con los servicios de Google: " + e.getMessage())
+                                    .setPositiveButton("Aceptar", null)
+                                    .show();
                         }
                     }
                 }

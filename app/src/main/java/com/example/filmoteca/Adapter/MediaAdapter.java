@@ -25,11 +25,13 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
     private MediaViewModel viewModel;
     private final LayoutInflater inflater;
     private Context context;
+    private String currentUser;
 
-    public MediaAdapter(Context context, MediaViewModel viewModel) {
+    public MediaAdapter(Context context, MediaViewModel viewModel, String currentUser) {
         this.context = context;
         this.inflater = LayoutInflater.from(context);
         this.viewModel = viewModel;
+        this.currentUser = currentUser;
         this.mediaList = new ArrayList<>();
     }
 
@@ -43,17 +45,19 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
     @Override
     public void onBindViewHolder(@NonNull MediaAdapter.MediaViewHolder holder, int position) {
         Media media = mediaList.get(position);
-
-        SharedPreferences prefs = context.getSharedPreferences("MisAjustes", Context.MODE_PRIVATE);
+        SharedPreferences prefs = context.getSharedPreferences("Ajustes_" + currentUser, Context.MODE_PRIVATE);
         boolean soloWifi = prefs.getBoolean("solo_wifi", false);
-
-        if (!soloWifi) {
-            Glide.with(context).load(R.drawable.upload).into(holder.binding.imagen);
+        if (soloWifi) {
+            Glide.with(context).load(R.drawable.television).into(holder.binding.imagen);
         } else {
-            Glide.with(context).load(media.getPoster()).into(holder.binding.imagen);
+            if (media.getPoster() != null && !media.getPoster().isEmpty()) {
+                Glide.with(context).load(media.getPoster()).into(holder.binding.imagen);
+            } else {
+                Glide.with(context).load(R.drawable.television).into(holder.binding.imagen);
+            }
         }
 
-        holder.binding.titulo.setText(media.getTitulo());
+        holder.binding.titulo.setText(media.getTitle());
         holder.binding.descripcion.setText(media.getOverview());
 
         holder.itemView.setOnClickListener(view -> {
@@ -67,12 +71,17 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
     public int getItemCount() {
         return mediaList != null ? mediaList.size() : 0;
     }
-    public void addMediaList(List<Media> nuevasMedias) {
+
+    public void establecerLista(List<Media> nuevasMedias) {
         this.mediaList.clear();
         if (nuevasMedias != null) {
             this.mediaList.addAll(nuevasMedias);
         }
         notifyDataSetChanged();
+    }
+
+    public Media getMediaAt(int position) {
+        return mediaList.get(position);
     }
 
     public static class MediaViewHolder extends RecyclerView.ViewHolder {

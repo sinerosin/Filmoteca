@@ -1,5 +1,7 @@
 package com.example.filmoteca.Fragments;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,15 +16,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.filmoteca.Adapter.MoviesAdapter;
-import com.example.filmoteca.Adapter.SeriesAdapter;
-import com.example.filmoteca.R;
 import com.example.filmoteca.ViewModel.AuthViewModel;
 import com.example.filmoteca.ViewModel.MediaViewModel;
 import com.example.filmoteca.ViewModel.MovieViewModel;
-import com.example.filmoteca.ViewModel.SerieViewModel;
 import com.example.filmoteca.databinding.FragmentMovieBinding;
-import com.example.filmoteca.databinding.FragmentSeriesBinding;
 
+import java.util.ArrayList;
 
 public class MovieFragment extends Fragment {
 
@@ -32,11 +31,9 @@ public class MovieFragment extends Fragment {
     private MediaViewModel mediaViewModel;
     private AuthViewModel authViewModel;
 
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         binding = FragmentMovieBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
@@ -47,15 +44,23 @@ public class MovieFragment extends Fragment {
 
         authViewModel = new ViewModelProvider(requireActivity()).get(AuthViewModel.class);
         viewModel = new ViewModelProvider(requireActivity()).get(MovieViewModel.class);
-        mediaViewModel=new ViewModelProvider(requireActivity()).get(MediaViewModel.class);
-
+        mediaViewModel = new ViewModelProvider(requireActivity()).get(MediaViewModel.class);
 
         configurarRecyclerView();
-        observarMovies();
         configurarPaginacion();
 
+        String uid = authViewModel.getCurrentUser() != null ? authViewModel.getCurrentUser().getUid() : "";
+        SharedPreferences prefs = requireActivity().getSharedPreferences("Ajustes_" + uid, Context.MODE_PRIVATE);
+        String idiomaGuardado = prefs.getString("idioma_pref_codigo", "es-ES");
 
-        viewModel.cargarMovies();
+        if (viewModel.idiomaActual == null || viewModel.idiomaActual.isEmpty()) {
+            viewModel.idiomaActual = idiomaGuardado;
+            viewModel.cargarMovies(idiomaGuardado);
+        } else if (!idiomaGuardado.equals(viewModel.idiomaActual)) {
+            viewModel.reset(idiomaGuardado);
+        }
+
+        observarMovies();
     }
 
     private void configurarRecyclerView() {
@@ -63,7 +68,7 @@ public class MovieFragment extends Fragment {
         if (authViewModel.getCurrentUser() != null) {
             user = authViewModel.getCurrentUser().getUid();
         }
-        adapter = new MoviesAdapter(requireContext(),viewModel,mediaViewModel,user);
+        adapter = new MoviesAdapter(requireContext(), viewModel, mediaViewModel, user);
         binding.recyclerViewMovie.setAdapter(adapter);
         binding.recyclerViewMovie.setLayoutManager(new LinearLayoutManager(getContext()));
     }
@@ -74,9 +79,11 @@ public class MovieFragment extends Fragment {
 
             switch (resource.status) {
                 case LOADING:
-                    binding.progressLoading.setVisibility(View.VISIBLE);
+                    if (viewModel.cleanAdapter || adapter.getItemCount() == 0) {
+                        binding.progressLoading.setVisibility(View.VISIBLE);
+                        binding.recyclerViewMovie.setVisibility(View.GONE);
+                    }
                     binding.layoutError.setVisibility(View.GONE);
-                    binding.recyclerViewMovie.setVisibility(View.VISIBLE);
                     break;
 
                 case SUCCESS:
@@ -84,8 +91,14 @@ public class MovieFragment extends Fragment {
                     binding.layoutError.setVisibility(View.GONE);
                     binding.recyclerViewMovie.setVisibility(View.VISIBLE);
 
+                    if (viewModel.cleanAdapter) {
+                        adapter.establecerLista(new ArrayList<>());
+                        viewModel.cleanAdapter = false;
+                    }
 
-                    adapter.addMovieList(resource.data);
+                    if (resource.data != null) {
+                        adapter.addMovieList(resource.data);
+                    }
                     break;
 
                 case ERROR:
@@ -96,18 +109,16 @@ public class MovieFragment extends Fragment {
                     break;
             }
         });
-    }private void configurarPaginacion() {
+    }
 
+    private void configurarPaginacion() {
         binding.recyclerViewMovie.addOnScrollListener(new RecyclerView.OnScrollListener() {
-
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
 
-
                 if (!recyclerView.canScrollVertically(1)) {
-
-                    viewModel.cargarMovies();
+                    viewModel.cargarMovies(viewModel.idiomaActual);
                 }
             }
         });

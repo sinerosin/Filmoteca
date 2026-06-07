@@ -13,7 +13,7 @@
     <fragment
         android:id="@+id/detailSerieFragment"
         android:name="com.example.filmoteca.Fragments.DetailSerieFragment"
-        android:label="Detalle"
+        android:label="Detalles"
         tools:layout="@layout/fragment_detail_serie" >
     </fragment>
     <fragment
@@ -41,5 +41,15 @@
         android:name="com.example.filmoteca.Fragments.SettingsFragment"
         android:label="Ajustes"
         tools:layout="@layout/fragment_settings" />
+    <fragment
+        android:id="@+id/actoresFragment"
+        android:name="com.example.filmoteca.Fragments.ActoresFragment"
+        android:label="Actores"
+        tools:layout="@layout/fragment_actores" />
+    <fragment
+        android:id="@+id/detalleActorFragment"
+        android:name="com.example.filmoteca.Fragments.DetalleActorFragment"
+        android:label="Detalles"
+        tools:layout="@layout/fragment_detalle_actor" />
 
 </navigation>

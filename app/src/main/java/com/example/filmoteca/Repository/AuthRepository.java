@@ -50,7 +50,6 @@ public class AuthRepository {
                 .addOnSuccessListener(result -> {
                     FirebaseUser user = auth.getCurrentUser();
                     if (user != null) {
-                        // Guardamos el nombre en la colección "usuarios" antes de terminar
                         db.collection("usuarios")
                                 .document(user.getUid())
                                 .set(crearMapaUsuario(name, email))

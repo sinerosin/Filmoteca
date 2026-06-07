@@ -58,6 +58,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Ej: Alejandro"
+                android:textColor="@color/black"
                 android:inputType="textPersonName" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -76,12 +77,12 @@
             android:layout_marginBottom="24dp"
             app:boxStrokeColor="@color/dorado">
 
-            <AutoCompleteTextView
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
                 android:id="@+id/spinnerIdioma"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="none"
-                />
+                android:textColor="@color/black"
+                android:inputType="none" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <RelativeLayout
@@ -135,8 +136,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="32dp"
             app:singleSelection="true"
-            app:selectionRequired="true"
-            app:checkedButton="@+id/btnTemaClaro">
+            app:selectionRequired="true">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnTemaClaro"

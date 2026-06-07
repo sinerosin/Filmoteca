@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
+        android:id="@id/actoresFragment"
+        android:icon="@android:drawable/btn_star_big_off"
+        android:title="Actores" />
+    <item
         android:id="@+id/pendienteFragment"
         android:icon="@android:drawable/ic_menu_agenda"
         android:title="Pendientes" />

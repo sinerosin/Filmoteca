@@ -11,8 +11,10 @@ import com.example.filmoteca.Model.Comentario;
 import com.example.filmoteca.Model.Media;
 import com.example.filmoteca.Model.Seguimiento;
 import com.example.filmoteca.Repository.MediaRepository;
+import com.example.filmoteca.Repository.SupabaseStorageRepository;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -20,14 +22,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MediaViewModel extends AndroidViewModel {
+    private final SupabaseStorageRepository supabaseRepository = new SupabaseStorageRepository();
     private MediaRepository mediaRepository;
     public MutableLiveData<Media> mediaSeleccionada = new MutableLiveData<>();
     public MutableLiveData<Seguimiento> seguimientoSeleccionado = new MutableLiveData<>();
+    private ListenerRegistration comentariosListener;
 
     public MediaViewModel(@NonNull Application application) {
         super(application);
         mediaRepository = new MediaRepository(application);
     }
+
     public LiveData<List<Media>> obtenerMedia(String user) {
         return mediaRepository.obtenerTodas(user);
     }
@@ -43,8 +48,14 @@ public class MediaViewModel extends AndroidViewModel {
     public void seleccionarMedia(Media media) {
         mediaSeleccionada.setValue(media);
     }
+
     public LiveData<List<Seguimiento>> obtenerSeguimiento(String user) {
         return mediaRepository.obtenerSeguimientos(user);
+    }
+    public LiveData<List<Seguimiento>> obtenerSeguimientosFiltradosDB(
+            String user, String titulo, int criterioOrden,
+            String fechaDesde, String fechaHasta, float puntMin, float puntMax) {
+        return mediaRepository.obtenerSeguimientosFiltrados(user, titulo, criterioOrden, fechaDesde, fechaHasta, puntMin, puntMax);
     }
 
     public void insertarSeguimiento(Seguimiento seguimiento) {
@@ -58,26 +69,29 @@ public class MediaViewModel extends AndroidViewModel {
     public void eliminarSeguimiento(Seguimiento seguimiento) {
         mediaRepository.eliminarSeguimiento(seguimiento);
     }
+
     public void enviarComentario(String idMedia, String userName, String mensaje) {
         if (mensaje.trim().isEmpty()) return;
-
         Comentario nuevoComentario = new Comentario(userName, mensaje, Timestamp.now());
 
         FirebaseFirestore.getInstance()
                 .collection("comentarios")
                 .document(idMedia)
                 .collection("mensajes")
-                .add(nuevoComentario); // Genera un ID automático para el comentario
+                .add(nuevoComentario);
     }
 
     public LiveData<List<Comentario>> obtenerComentarios(String idMedia) {
         MutableLiveData<List<Comentario>> liveData = new MutableLiveData<>();
+        if (comentariosListener != null) {
+            comentariosListener.remove();
+        }
 
-        FirebaseFirestore.getInstance()
+        comentariosListener = FirebaseFirestore.getInstance()
                 .collection("comentarios")
                 .document(idMedia)
                 .collection("mensajes")
-                .orderBy("timestamp", Query.Direction.DESCENDING) // Los más recientes primero
+                .orderBy("timestamp", Query.Direction.DESCENDING)
                 .addSnapshotListener((value, error) -> {
                     if (error != null) {
                         liveData.setValue(new ArrayList<>());
@@ -94,4 +108,9 @@ public class MediaViewModel extends AndroidViewModel {
 
         return liveData;
     }
+
+    public LiveData<String> subirImagenRecuerdo(java.io.File archivoImagen, String userId) {
+        return supabaseRepository.uploadImage(archivoImagen, userId);
+    }
+
 }

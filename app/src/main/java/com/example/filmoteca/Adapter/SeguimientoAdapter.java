@@ -12,7 +12,6 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.filmoteca.Model.Media;
 import com.example.filmoteca.Model.Seguimiento;
 import com.example.filmoteca.R;
 import com.example.filmoteca.ViewModel.MediaViewModel;
@@ -37,7 +36,6 @@ public class SeguimientoAdapter extends RecyclerView.Adapter<SeguimientoAdapter.
     @NonNull
     @Override
     public SeguimientoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
         View view = inflater.inflate(R.layout.viewholde_pendiente, parent, false);
         return new SeguimientoViewHolder(view);
     }
@@ -46,21 +44,25 @@ public class SeguimientoAdapter extends RecyclerView.Adapter<SeguimientoAdapter.
     public void onBindViewHolder(@NonNull SeguimientoViewHolder holder, int position) {
         Seguimiento seguimiento = seguimientoList.get(position);
 
-        SharedPreferences prefs = context.getSharedPreferences("MisAjustes", Context.MODE_PRIVATE);
+        String prefsName = "Ajustes_" + seguimiento.getUser();
+        SharedPreferences prefs = context.getSharedPreferences(prefsName, Context.MODE_PRIVATE);
         boolean soloWifi = prefs.getBoolean("solo_wifi", false);
-        if (!soloWifi) {
 
-            Glide.with(context).load(R.drawable.upload).into(holder.binding.imagen);
+        if (soloWifi) {
+            Glide.with(context).load(R.drawable.television).into(holder.binding.imagen);
         } else {
-
-            Glide.with(context).load(seguimiento.getPosterPath()).into(holder.binding.imagen);
+            if (seguimiento.getPosterPath() != null && !seguimiento.getPosterPath().isEmpty()) {
+                Glide.with(context).load(seguimiento.getPosterPath()).into(holder.binding.imagen);
+            } else {
+                Glide.with(context).load(R.drawable.television).into(holder.binding.imagen);
+            }
         }
-        holder.binding.descripcion.setText(seguimiento.getPosterPath());
+
+        holder.binding.descripcion.setText("Nota: " + seguimiento.getPuntuacion() + " ⭐ — " + seguimiento.getFechaVisualizacion());
         holder.binding.titulo.setText(seguimiento.getTitulo());
+
         holder.itemView.setOnClickListener(view -> {
-
             viewModel.seleccionarSeguimiento(seguimiento);
-
             NavController navController = Navigation.findNavController(view);
             navController.navigate(R.id.detalleSeguimientoFragment);
         });
@@ -76,10 +78,13 @@ public class SeguimientoAdapter extends RecyclerView.Adapter<SeguimientoAdapter.
         notifyDataSetChanged();
     }
     public void addSeguimientoList(List<Seguimiento> lista) {
-        int inicio = this.seguimientoList.size();
-        this.seguimientoList.addAll(lista);
-        notifyItemRangeInserted(inicio, lista.size());
+        this.seguimientoList.clear();
+        if (lista != null) {
+            this.seguimientoList.addAll(lista);
+        }
+        notifyDataSetChanged();
     }
+
     public static class SeguimientoViewHolder extends RecyclerView.ViewHolder {
         ViewholdePendienteBinding binding;
 
@@ -88,6 +93,7 @@ public class SeguimientoAdapter extends RecyclerView.Adapter<SeguimientoAdapter.
             binding = ViewholdePendienteBinding.bind(itemView);
         }
     }
+
     public Seguimiento getSeguimientoAt(int position) {
         return seguimientoList.get(position);
     }

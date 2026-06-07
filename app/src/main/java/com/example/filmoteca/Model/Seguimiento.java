@@ -1,13 +1,10 @@
 package com.example.filmoteca.Model;
 
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
 import java.io.Serializable;
 
-@Entity(tableName = "seguimiento")
+
 public class Seguimiento implements Serializable {
 
-    @PrimaryKey(autoGenerate = true)
     private int idInternal;
     private String user;
     private String titulo;
@@ -17,19 +14,25 @@ public class Seguimiento implements Serializable {
     private String imagenRecuerdo;
     private String posterPath;
 
+    public Seguimiento() {
+    }
+
     public Seguimiento(String titulo, String tipo, String fechaVisualizacion,
                        float puntuacion, String imagenRecuerdo,
-                       String posterPath,String user ) {
+                       String posterPath, String user ) {
         this.titulo = titulo;
         this.tipo = tipo;
         this.fechaVisualizacion = fechaVisualizacion;
         this.puntuacion = puntuacion;
         this.imagenRecuerdo = imagenRecuerdo;
         this.posterPath = posterPath;
-        this.user=user;
+        this.user = user;
     }
 
     public int getIdInternal() { return idInternal; }
+    public String getId() {
+        return String.valueOf(idInternal);
+    }
     public void setIdInternal(int idInternal) { this.idInternal = idInternal; }
 
     public String getTitulo() { return titulo; }
@@ -45,15 +48,15 @@ public class Seguimiento implements Serializable {
     public void setPuntuacion(float puntuacion) { this.puntuacion = puntuacion; }
 
     public String getImagenRecuerdo() { return imagenRecuerdo; }
-    public void setImagenRecuerdoUri(String imagenRecuerdo) { this.imagenRecuerdo = imagenRecuerdo; }
+    public void setImagenRecuerdo(String imagenRecuerdo) { this.imagenRecuerdo = imagenRecuerdo; }
 
     public String getPosterPath() { return posterPath; }
     public void setPosterPath(String posterPath) { this.posterPath = posterPath; }
+
     public String getUser() {
         return user;
     }
     public void setUser(String user) {
         this.user = user;
     }
-
 }

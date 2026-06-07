@@ -7,11 +7,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -25,6 +24,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 public class SettingsFragment extends Fragment {
     private FragmentSettingsBinding binding;
@@ -65,6 +65,12 @@ public class SettingsFragment extends Fragment {
             configurarSpinnerIdioma();
             cargarPreferencias();
 
+            binding.toggleGroupTema.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
+                if (isChecked) {
+                    group.check(checkedId);
+                }
+            });
+
             binding.btnGuardarAjustes.setOnClickListener(v -> guardarPreferencias());
             binding.btnResetear.setOnClickListener(v -> resetearPreferencias());
             binding.btnLogout.setOnClickListener(v -> cerrarSesion());
@@ -73,8 +79,7 @@ public class SettingsFragment extends Fragment {
     }
 
     private void configurarSpinnerIdioma() {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, idiomas);
-        binding.spinnerIdioma.setAdapter(adapter);
+        binding.spinnerIdioma.setSimpleItems(idiomas);
     }
 
     private void cargarPreferencias() {
@@ -83,47 +88,81 @@ public class SettingsFragment extends Fragment {
                 binding.etUsername.setText(nombreRemoto);
             }
         });
+
         binding.spinnerIdioma.setText(sharedPreferences.getString("idioma_pref_nombre", "Español (España)"), false);
         binding.switchWifi.setChecked(sharedPreferences.getBoolean("solo_wifi", false));
 
         boolean esOscuro = sharedPreferences.getBoolean("tema_oscuro", false);
-        binding.toggleGroupTema.check(esOscuro ? R.id.btnTemaOscuro : R.id.btnTemaClaro);
+        if (esOscuro) {
+            binding.toggleGroupTema.check(R.id.btnTemaOscuro);
+        } else {
+            binding.toggleGroupTema.check(R.id.btnTemaClaro);
+        }
     }
 
     private void guardarPreferencias() {
-        // 1. Guardamos el nombre en la nube de Firestore de forma remota
         String nombre = binding.etUsername.getText().toString().trim();
-        if (!nombre.isEmpty()) {
-            viewModel.actualizarNombreUsuario(currentUser.getUid(), nombre);
-        } else {
-            Toast.makeText(getContext(), "El nombre no puede estar vacío", Toast.LENGTH_SHORT).show();
+        if (nombre.isEmpty()) {
+            new AlertDialog.Builder(requireContext())
+                    .setTitle("Campo obligatorio")
+                    .setMessage("El nombre de usuario no puede estar vacío.")
+                    .setPositiveButton("Aceptar", null)
+                    .show();
             return;
         }
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        String idiomaSeleccionado = binding.spinnerIdioma.getText().toString();
 
-        String codigoIdioma = "es-ES";
-        if (idiomaSeleccionado.equals("English")) codigoIdioma = "en-US";
-        else if (idiomaSeleccionado.equals("Français")) codigoIdioma = "fr-FR";
-        else if (idiomaSeleccionado.equals("Deutsch")) codigoIdioma = "de-DE";
-        editor.putString("idioma_pref_nombre", idiomaSeleccionado);
-        editor.putString("idioma_pref_codigo", codigoIdioma);
-        editor.putBoolean("solo_wifi", binding.switchWifi.isChecked());
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setDisplayName(nombre)
+                .build();
 
-        boolean temaOscuro = binding.toggleGroupTema.getCheckedButtonId() == R.id.btnTemaOscuro;
-        editor.putBoolean("tema_oscuro", temaOscuro);
-        editor.apply();
+        currentUser.updateProfile(profileUpdates).addOnCompleteListener(task -> {
+            if (task.isSuccessful() && binding != null) {
 
-        AppCompatDelegate.setDefaultNightMode(temaOscuro ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+                viewModel.actualizarNombreUsuario(currentUser.getUid(), nombre);
 
-        Toast.makeText(getContext(), "Ajustes guardados correctamente", Toast.LENGTH_SHORT).show();
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                String idiomaSeleccionado = binding.spinnerIdioma.getText().toString();
+
+                String codigoIdioma = "es-ES";
+                if (idiomaSeleccionado.equals("English")) codigoIdioma = "en-US";
+                else if (idiomaSeleccionado.equals("Français")) codigoIdioma = "fr-FR";
+                else if (idiomaSeleccionado.equals("Deutsch")) codigoIdioma = "de-DE";
+
+                editor.putString("idioma_pref_nombre", idiomaSeleccionado);
+                editor.putString("idioma_pref_codigo", codigoIdioma);
+                editor.putBoolean("solo_wifi", binding.switchWifi.isChecked());
+
+                boolean temaOscuro = binding.toggleGroupTema.getCheckedButtonId() == R.id.btnTemaOscuro;
+                editor.putBoolean("tema_oscuro", temaOscuro);
+                editor.commit();
+
+                AppCompatDelegate.setDefaultNightMode(temaOscuro ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+
+                new AlertDialog.Builder(requireContext())
+                        .setTitle("Ajustes Guardados")
+                        .setMessage("El nombre de usuario y tus preferencias se han sincronizado en Firebase correctamente.")
+                        .setPositiveButton("Aceptar", null)
+                        .show();
+            } else if (binding != null) {
+                new AlertDialog.Builder(requireContext())
+                        .setTitle("Error")
+                        .setMessage("No se pudo actualizar el nombre en el servidor de autenticación.")
+                        .setPositiveButton("Aceptar", null)
+                        .show();
+            }
+        });
     }
 
     private void resetearPreferencias() {
-        sharedPreferences.edit().clear().apply();
-        cargarPreferencias();
+        sharedPreferences.edit().clear().commit();
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        Toast.makeText(getContext(), "Preferencias locales restablecidas", Toast.LENGTH_SHORT).show();
+        cargarPreferencias();
+
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Restablecer Ajustes")
+                .setMessage("Las preferencias locales se han restablecido a los valores por defecto.")
+                .setPositiveButton("Aceptar", null)
+                .show();
     }
 
     private void cerrarSesion() {

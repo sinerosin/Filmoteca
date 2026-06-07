@@ -105,4 +105,18 @@ public class AuthViewModel extends AndroidViewModel {
     public void actualizarNombreUsuario(String uid, String nuevoNombre) {
         repo.actualizarNombreEnFirestore(uid, nuevoNombre);
     }
+    public void recuperarContrasena(String email, AuthRepository.AuthCallback callback) {
+        if (email == null || email.trim().isEmpty()) {
+            callback.onError("Por favor, introduce tu correo electrónico.");
+            return;
+        }
+        com.google.firebase.auth.FirebaseAuth.getInstance().sendPasswordResetEmail(email.trim())
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        callback.onSuccess(null);
+                    } else {
+                        callback.onError(task.getException() != null ? task.getException().getMessage() : "Error al enviar el correo.");
+                    }
+                });
+    }
 }

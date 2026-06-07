@@ -1,28 +1,26 @@
 package com.example.filmoteca.Model;
 
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
-
-@Entity(tableName = "media")
 public class Media {
-    @PrimaryKey
+
     private int id;
     private String user;
     private String title;
     private String overview;
     private String releaseDate;
     private String poster;
+    private String videoKey;
 
     public Media() {
     }
 
-    public Media(int id, String title, String overview, String releaseDate, String poster, String user) {
+    public Media(int id, String title, String overview, String releaseDate, String poster, String user, String videoKey) {
         this.id = id;
         this.title = title;
         this.overview = overview;
         this.releaseDate = releaseDate;
         this.poster = poster;
         this.user = user;
+        this.videoKey = videoKey;
     }
 
     public int getId() {
@@ -68,6 +66,7 @@ public class Media {
     public String getPoster() {
         return poster;
     }
+
     public void setPoster(String poster) {
         this.poster = poster;
     }
@@ -78,5 +77,13 @@ public class Media {
 
     public void setUser(String user) {
         this.user = user;
+    }
+
+    public String getVideoKey() {
+        return videoKey;
+    }
+
+    public void setVideoKey(String videoKey) {
+        this.videoKey = videoKey;
     }
 }

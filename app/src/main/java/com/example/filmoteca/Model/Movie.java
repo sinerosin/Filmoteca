@@ -39,6 +39,7 @@ public class Movie {
     public String getVideo_key() {
         return "https://www.youtube.com/watch?v="+video_key;
     }
+
     public static class MovieVideo{
         private String key;
         private String site;

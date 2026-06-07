@@ -1,12 +1,13 @@
 package com.example.filmoteca.Fragments;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,17 +16,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.filmoteca.Adapter.SeriesAdapter;
-import com.example.filmoteca.Model.Serie;
-import com.example.filmoteca.R;
-import com.example.filmoteca.Repository.SeriesRepository;
 import com.example.filmoteca.ViewModel.AuthViewModel;
 import com.example.filmoteca.ViewModel.MediaViewModel;
 import com.example.filmoteca.ViewModel.SerieViewModel;
 import com.example.filmoteca.databinding.FragmentSeriesBinding;
 
 import java.util.ArrayList;
-import java.util.List;
-
 
 public class SeriesFragment extends Fragment {
     private FragmentSeriesBinding binding;
@@ -34,12 +30,9 @@ public class SeriesFragment extends Fragment {
     private MediaViewModel mediaViewModel;
     private AuthViewModel authViewModel;
 
-
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         binding = FragmentSeriesBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
@@ -50,16 +43,22 @@ public class SeriesFragment extends Fragment {
 
         authViewModel = new ViewModelProvider(requireActivity()).get(AuthViewModel.class);
         viewModel = new ViewModelProvider(requireActivity()).get(SerieViewModel.class);
-        mediaViewModel=new ViewModelProvider(requireActivity()).get(MediaViewModel.class);
-
+        mediaViewModel = new ViewModelProvider(requireActivity()).get(MediaViewModel.class);
 
         configurarRecyclerView();
-        observarSeries();
         configurarPaginacion();
 
+        String uid = authViewModel.getCurrentUser() != null ? authViewModel.getCurrentUser().getUid() : "";
+        SharedPreferences prefs = requireActivity().getSharedPreferences("Ajustes_" + uid, Context.MODE_PRIVATE);
+        String idiomaGuardado = prefs.getString("idioma_pref_codigo", "es-ES");
 
-        viewModel.cargarSeries();
-
+        if (viewModel.idiomaActual == null || viewModel.idiomaActual.isEmpty()) {
+            viewModel.idiomaActual = idiomaGuardado;
+            viewModel.cargarSeries(idiomaGuardado);
+        } else if (!idiomaGuardado.equals(viewModel.idiomaActual)) {
+            viewModel.reset(idiomaGuardado);
+        }
+        observarSeries();
     }
 
     private void configurarRecyclerView() {
@@ -67,7 +66,7 @@ public class SeriesFragment extends Fragment {
         if (authViewModel.getCurrentUser() != null) {
             user = authViewModel.getCurrentUser().getUid();
         }
-        adapter = new SeriesAdapter(requireContext(), viewModel,mediaViewModel,user);
+        adapter = new SeriesAdapter(requireContext(), viewModel, mediaViewModel, user);
         binding.recyclerViewSerie.setAdapter(adapter);
         binding.recyclerViewSerie.setLayoutManager(new LinearLayoutManager(getContext()));
     }
@@ -78,9 +77,11 @@ public class SeriesFragment extends Fragment {
 
             switch (resource.status) {
                 case LOADING:
-                    binding.progressLoading.setVisibility(View.VISIBLE);
+                    if (viewModel.cleanAdapter || adapter.getItemCount() == 0) {
+                        binding.progressLoading.setVisibility(View.VISIBLE);
+                        binding.recyclerViewSerie.setVisibility(View.GONE);
+                    }
                     binding.layoutError.setVisibility(View.GONE);
-                    binding.recyclerViewSerie.setVisibility(View.VISIBLE);
                     break;
 
                 case SUCCESS:
@@ -88,9 +89,14 @@ public class SeriesFragment extends Fragment {
                     binding.layoutError.setVisibility(View.GONE);
                     binding.recyclerViewSerie.setVisibility(View.VISIBLE);
 
+                    if (viewModel.cleanAdapter) {
+                        adapter.establecerLista(new ArrayList<>());
+                        viewModel.cleanAdapter = false;
+                    }
 
-                    adapter.addSerieList(resource.data);
-
+                    if (resource.data != null) {
+                        adapter.addSerieList(resource.data);
+                    }
                     break;
 
                 case ERROR:
@@ -101,17 +107,16 @@ public class SeriesFragment extends Fragment {
                     break;
             }
         });
-    }private void configurarPaginacion() {
+    }
 
+    private void configurarPaginacion() {
         binding.recyclerViewSerie.addOnScrollListener(new RecyclerView.OnScrollListener() {
-
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
 
                 if (!recyclerView.canScrollVertically(1)) {
-
-                    viewModel.cargarSeries();
+                    viewModel.cargarSeries(viewModel.idiomaActual);
                 }
             }
         });

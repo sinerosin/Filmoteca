@@ -8,11 +8,11 @@
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.example.filmoteca.LoginFragment"
-        android:label="fragment_login"
+        android:label="Login"
         tools:layout="@layout/fragment_login" />
     <fragment
         android:id="@+id/registerFragment"
         android:name="com.example.filmoteca.RegisterFragment"
-        android:label="fragment_register"
+        android:label="Registro"
         tools:layout="@layout/fragment_register" />
 </navigation>

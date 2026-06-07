@@ -1,7 +1,10 @@
 package com.example.filmoteca.Fragments;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -9,6 +12,7 @@ import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -18,7 +22,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Toast;
 
 import com.example.filmoteca.Api.RetrofitClient;
 import com.example.filmoteca.Model.Movie;
@@ -31,6 +34,9 @@ import com.example.filmoteca.ViewModel.AuthViewModel;
 import com.example.filmoteca.ViewModel.MediaViewModel;
 import com.example.filmoteca.databinding.FragmentFormBinding;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -43,18 +49,16 @@ public class FormFragment extends Fragment {
     FragmentFormBinding binding;
     private MediaViewModel mediaViewModel;
     private AuthViewModel authViewModel;
-    private String user=null;
-
-    private String imagen= null;
-    private String poster=null;
+    private String user = null;
+    private Uri uriImagenSeleccionada = null;
+    private String poster = null;
     private List<Movie> listaPeliculasResultados = new ArrayList<>();
     private List<Serie> listaSeriesResultados = new ArrayList<>();
 
     private final ActivityResultLauncher<PickVisualMediaRequest> pickMedia =
             registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), img -> {
                 if (img != null) {
-                    imagen = img.toString();
-
+                    uriImagenSeleccionada = img;
                     binding.imgPrevisualizacion.setImageURI(img);
                     binding.imgPrevisualizacion.setVisibility(View.VISIBLE);
                     binding.layoutUploadPlaceholder.setVisibility(View.GONE);
@@ -72,9 +76,11 @@ public class FormFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         mediaViewModel = new ViewModelProvider(requireActivity()).get(MediaViewModel.class);
         authViewModel = new ViewModelProvider(requireActivity()).get(AuthViewModel.class);
+
         if (authViewModel.getCurrentUser() != null) {
             user = authViewModel.getCurrentUser().getUid();
         }
+
         binding.toggleGroup.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
             if (isChecked) {
                 if (checkedId == R.id.btnPelicula) {
@@ -86,7 +92,9 @@ public class FormFragment extends Fragment {
                 poster = null;
             }
         });
+
         actualizarColores(binding.btnPelicula.isChecked());
+
         binding.autoCompleteTitulo.setOnItemClickListener((parent, v, position, id) -> {
             if (binding.btnPelicula.isChecked()) {
                 poster = listaPeliculasResultados.get(position).getPoster_path();
@@ -94,6 +102,7 @@ public class FormFragment extends Fragment {
                 poster = listaSeriesResultados.get(position).getPoster_path();
             }
         });
+
         binding.dateInputLayout.getEditText().setOnClickListener(v -> mostrarDatePicker());
 
         binding.btnBuscarLupa.setOnClickListener(v -> {
@@ -109,11 +118,9 @@ public class FormFragment extends Fragment {
                     .build());
         });
 
-
-
-
         binding.btnGuardar.setOnClickListener(v -> guardarSeguimiento());
     }
+
     private void actualizarColores(boolean peliculaSeleccionada) {
         int colorDorado = ContextCompat.getColor(requireContext(), R.color.dorado);
         int colorMorado = ContextCompat.getColor(requireContext(), R.color.morado);
@@ -126,6 +133,7 @@ public class FormFragment extends Fragment {
             binding.btnSerie.setBackgroundTintList(ColorStateList.valueOf(colorDorado));
         }
     }
+
     private void mostrarDatePicker() {
         Calendar calendar = Calendar.getInstance();
         DatePickerDialog dialog = new DatePickerDialog(requireContext(), (d, y, m, day) -> {
@@ -136,14 +144,22 @@ public class FormFragment extends Fragment {
     }
 
     private void busqueda(String query) {
+        String uid = authViewModel.getCurrentUser() != null ? authViewModel.getCurrentUser().getUid() : "";
+        SharedPreferences prefs = requireActivity().getSharedPreferences("Ajustes_" + uid, Context.MODE_PRIVATE);
+        String idiomaGuardado = prefs.getString("idioma_pref_codigo", "es-ES");
+
+        if (idiomaGuardado == null || idiomaGuardado.trim().isEmpty()) {
+            idiomaGuardado = "es-ES";
+        }
+
         boolean esPelicula = binding.btnPelicula.isChecked();
         if (esPelicula) {
-            RetrofitClient.getSeriesApi().buscarPeliculas(query, "es-ES")
+            RetrofitClient.getSeriesApi().buscarPeliculas(query, idiomaGuardado)
                     .enqueue(new Callback<MovieResponse>() {
                         @Override
                         public void onResponse(@NonNull Call<MovieResponse> call, @NonNull Response<MovieResponse> response) {
                             if (response.isSuccessful() && response.body() != null) {
-                                listaPeliculasResultados=response.body().getResults();
+                                listaPeliculasResultados = response.body().getResults();
                                 List<String> titulos = new ArrayList<>();
                                 for (Movie m : response.body().getResults()){
                                     titulos.add(m.getTitulo());
@@ -154,16 +170,16 @@ public class FormFragment extends Fragment {
                         @Override public void onFailure(@NonNull Call<MovieResponse> call, @NonNull Throwable t) {}
                     });
         } else {
-            RetrofitClient.getSeriesApi().buscarSeries(query, "es-ES")
+            RetrofitClient.getSeriesApi().buscarSeries(query, idiomaGuardado)
                     .enqueue(new Callback<SerieResponse>() {
                         @Override
                         public void onResponse(@NonNull Call<SerieResponse> call, @NonNull Response<SerieResponse> response) {
                             if (response.isSuccessful() && response.body() != null) {
-                                listaSeriesResultados=response.body().getResults();
+                                listaSeriesResultados = response.body().getResults();
                                 List<String> nombres = new ArrayList<>();
                                 for (Serie s : response.body().getResults()){
                                     nombres.add(s.getName());
-                                    poster=s.getPoster_path();
+                                    poster = s.getPoster_path();
                                 }
                                 sugerencias(nombres);
                             }
@@ -184,21 +200,102 @@ public class FormFragment extends Fragment {
         String titulo = binding.autoCompleteTitulo.getText().toString();
 
         if (titulo.isEmpty()) {
-            Toast.makeText(requireContext(), "Selecciona un título real", Toast.LENGTH_SHORT).show();
+            new AlertDialog.Builder(requireContext())
+                    .setTitle("Campo obligatorio")
+                    .setMessage("Por favor, selecciona o introduce un título válido.")
+                    .setPositiveButton("Aceptar", null)
+                    .show();
             return;
         }
 
-        Seguimiento s = new Seguimiento(
-                titulo,
-                binding.btnPelicula.isChecked() ? "Película" : "Serie",
-                binding.dateInputLayout.getEditText().getText().toString(),
-                binding.ratingBar.getRating(),
-                imagen,
-                poster,
-                user
-        );
+        binding.btnGuardar.setEnabled(false);
 
-        mediaViewModel.insertarSeguimiento(s);
-        Navigation.findNavController(requireView()).popBackStack();
+        if (uriImagenSeleccionada != null) {
+            File archivoImagen = converetirUriAFile(uriImagenSeleccionada);
+
+            if (archivoImagen != null && user != null) {
+                mediaViewModel.subirImagenRecuerdo(archivoImagen, user).observe(getViewLifecycleOwner(), urlPublica -> {
+                    if (urlPublica != null) {
+                        Seguimiento s = new Seguimiento(
+                                titulo,
+                                binding.btnPelicula.isChecked() ? "Película" : "Serie",
+                                binding.dateInputLayout.getEditText().getText().toString(),
+                                binding.ratingBar.getRating(),
+                                urlPublica,
+                                poster,
+                                user
+                        );
+
+                        mediaViewModel.insertarSeguimiento(s);
+
+                        new AlertDialog.Builder(requireContext())
+                                .setTitle("Guardado Exitoso")
+                                .setMessage("¡El seguimiento y el recuerdo gráfico se han almacenado con éxito!")
+                                .setPositiveButton("Aceptar", (dialog, which) -> {
+                                    Navigation.findNavController(requireView()).popBackStack();
+                                })
+                                .setCancelable(false)
+                                .show();
+                    } else {
+                        binding.btnGuardar.setEnabled(true);
+                        new AlertDialog.Builder(requireContext())
+                                .setTitle("Error de Conexión")
+                                .setMessage("Fallo al subir el archivo multimedia al almacenamiento en la nube.")
+                                .setPositiveButton("Aceptar", null)
+                                .show();
+                    }
+                });
+            } else {
+                binding.btnGuardar.setEnabled(true);
+                new AlertDialog.Builder(requireContext())
+                        .setTitle("Error de Proceso")
+                        .setMessage("No se ha podido preparar la estructura del archivo multimedia.")
+                        .setPositiveButton("Aceptar", null)
+                        .show();
+            }
+        } else {
+            Seguimiento s = new Seguimiento(
+                    titulo,
+                    binding.btnPelicula.isChecked() ? "Película" : "Serie",
+                    binding.dateInputLayout.getEditText().getText().toString(),
+                    binding.ratingBar.getRating(),
+                    null,
+                    poster,
+                    user
+            );
+            mediaViewModel.insertarSeguimiento(s);
+
+            new AlertDialog.Builder(requireContext())
+                    .setTitle("Guardado Exitoso")
+                    .setMessage("¡Tu seguimiento se ha registrado de manera correcta!")
+                    .setPositiveButton("Aceptar", (dialog, which) -> {
+                        Navigation.findNavController(requireView()).popBackStack();
+                    })
+                    .setCancelable(false)
+                    .show();
+        }
+    }
+
+    private File converetirUriAFile(Uri uri) {
+        try {
+            InputStream inputStream = requireContext().getContentResolver().openInputStream(uri);
+            if (inputStream == null) return null;
+
+            File tempFile = File.createTempFile("recuerdo_", ".jpg", requireContext().getCacheDir());
+            FileOutputStream outputStream = new FileOutputStream(tempFile);
+
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+
+            outputStream.close();
+            inputStream.close();
+            return tempFile;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

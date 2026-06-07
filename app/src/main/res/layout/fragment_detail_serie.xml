@@ -53,6 +53,24 @@
             android:textColor="@color/black"
             android:textStyle="bold"
             android:text="Ver Tráiler en YouTube" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Reparto principal"
+            android:textColor="@color/morado"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="8dp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewActores"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:scrollbars="none"
+            android:layout_marginBottom="4dp"
+            tools:listitem="@layout/item_actor" />
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -69,7 +87,6 @@
             android:textStyle="bold"
             android:layout_marginBottom="12dp" />
 
-        <!-- Entrada de texto y botón para enviar un comentario -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -83,6 +100,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="Escribe un comentario..."
+                android:textColorHint="@color/morado"
                 android:inputType="textCapSentences"
                 android:textColor="@color/black"
                 android:maxLines="3" />
@@ -97,7 +115,6 @@
                 android:contentDescription="Enviar comentario" />
         </LinearLayout>
 
-        <!-- Listado donde aparecerán los comentarios cargados de Firestore -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewComentarios"
             android:layout_width="match_parent"
